@@ -8,8 +8,6 @@ dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 mongoose.Promise = global.Promise;
 
-console.log(isWsl);
-
 if (isWsl) {
     mongoose.connect('mongodb://' + dns.getServers()[0] +':27017/' + process.env.MONGO_DBNAME, 
     {
