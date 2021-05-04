@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import db from '../../models';
+import sendErrorResponse from '../tool/error';
 
 const router = Router();
 
@@ -23,8 +24,7 @@ router.get('/', async (req: Request, res: Response) => {
 
         res.json(result);
     } catch (err) {
-        console.log(err)
-        res.sendStatus(500);
+        sendErrorResponse(res, 500, 'unknown_error', err);
     }
 });
 
@@ -32,18 +32,18 @@ router.post('/', async (req: Request, res: Response) => {
     const { taxiNumber, sampleCode, isMale, age, score, review } = req.body;
     const data: Record<string, unknown> = {taxiNumber, sampleCode, isMale, age};
 
-    if (score)
-        data.score = score;
-    if (review)
-        data.review = review;
+    if (!taxiNumber || !sampleCode || isMale === undefined || !age)
+        return sendErrorResponse(res, 400, 'invalid_form');
+
+    if (score) data.score = score;
+    if (review) data.review = review;
 
     try {
         await db.Customer.create(data);
 
         res.sendStatus(201);
     } catch (err) {
-        console.log(err);
-        res.sendStatus(500);
+        sendErrorResponse(res, 500, 'unknown_error', err);
     }
 });
 
