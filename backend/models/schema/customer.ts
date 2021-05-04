@@ -27,6 +27,8 @@ export default function (autoIncrement: any) {
         review: {
             type: String
         }
+    }, {
+        timestamps: true
     });
 
     const sampleSchema = new mongoose.Schema({
@@ -37,6 +39,8 @@ export default function (autoIncrement: any) {
             type: String,
             required: true
         }
+    }, {
+        timestamps: true
     })
 
     customerSchema.plugin(autoIncrement.plugin, {

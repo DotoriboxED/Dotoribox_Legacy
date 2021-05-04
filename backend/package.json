@@ -37,6 +37,7 @@
     "http-errors": "^1.8.0",
     "is-wsl": "^2.2.0",
     "mongoose": "^5.11.13",
+    "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.10.0",
     "node": "^15.4.0",
     "pug": "^3.0.2",
