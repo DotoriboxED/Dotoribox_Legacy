@@ -42,6 +42,9 @@ export default function (autoIncrement: any) {
         isDeleted: {
             type: Boolean,
             default: false
+        },
+        image: {
+            type: String
         }
     }, {
         timestamps: true

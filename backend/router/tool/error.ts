@@ -3,7 +3,8 @@ import { Response } from 'express';
 const errTexts: any = {
     'unknown_error': '알 수 없는 오류가 발생했습니다.',
 
-    'invalid_form': '필수항목이 입력되지 않았습니다.'
+    'invalid_form': '필수항목이 입력되지 않았습니다.',
+    'sample_not_exists': 'Sample이 존재하지 않습니다.'
 }
 
 function sendErrorResponse(res: Response, statusCode: number, errText: string, err?: Error) {
