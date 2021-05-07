@@ -47,4 +47,23 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+router.post('/:customerId/evaluate', async (req: Request, res: Response) => {
+    const { customerId } = req.params;
+    const { score, review } = req.body;
+    const data: Record<string, unknown> = {};
+
+    if (score) data.score = score;
+    if (review) data.review = review;
+
+    try {
+        const isExist = await db.Customer.updateOne({
+            id: customerId
+        }, data);
+
+        res.sendStatus(201);
+    } catch (err) {
+        sendErrorResponse(res, 500, 'unknown_error', err);
+    }
+});
+
 export default router;
