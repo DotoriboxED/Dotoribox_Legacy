@@ -1,8 +1,11 @@
 import mongoose from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment'
 import dotenv from 'dotenv';
 import path from 'path';
 import isWsl from 'is-wsl';
 import dns from 'dns';
+
+import Customers from './schema/customer';
 
 dotenv.config({ path: path.join(process.cwd(), '.env') });
 
@@ -26,6 +29,9 @@ if (isWsl) {
     .catch(err => console.log(err));
 }
 
-const db = {} // Input Database Object Here
+mongoose.set('useCreateIndex', true);
+autoIncrement.initialize(mongoose.connection);
+
+const db = {...Customers(autoIncrement)} // Input Database Object Here
 
 export default db;
