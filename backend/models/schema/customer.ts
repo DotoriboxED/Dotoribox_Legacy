@@ -45,6 +45,14 @@ export default function (autoIncrement: any) {
         },
         image: {
             type: String
+        },
+        price: {
+            type: Number,
+            required: true
+        },
+        explain: {
+            type: String,
+            required: true
         }
     }, {
         timestamps: true
@@ -57,8 +65,8 @@ export default function (autoIncrement: any) {
         increment: 1
     });
 
-    customerSchema.plugin(autoIncrement.plugin, {
-        model: 'Customer',
+    sampleSchema.plugin(autoIncrement.plugin, {
+        model: 'Sample',
         field: 'id',
         startAt: 1,
         increment: 1
