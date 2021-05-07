@@ -58,6 +58,13 @@ router.post('/:customerId/evaluate', async (req: Request, res: Response) => {
     try {
         const isExist = await db.Customer.updateOne({
             id: customerId
+        });
+
+        if (!isExist)
+            return sendErrorResponse(res, 404, 'review_not_exists');
+
+        await db.Customer.updateOne({
+            id: customerId
         }, data);
 
         res.sendStatus(201);
