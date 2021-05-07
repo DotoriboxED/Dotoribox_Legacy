@@ -1,25 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Route, Switch, BrowserRouter as Router, withRouter } from "react-router-dom";
+import Startpage from './pages/Startpage';
+import Selectpage from './pages/Selectpage'
+import Samplepage from './pages/Samplepage';
+import Reviewpage from './pages/ReviewPage';
 
-function App() {
+function App({location}) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Switch>
+        <Route path='/' component={Startpage} exact={true}/>
+        <Route path='/selectsample' component={Selectpage}/>
+        <Route path='/userinfo' component={Samplepage}/>
+        <Route path='/review' component={Reviewpage}/>
+      </Switch>
   );
 }
 
-export default App;
+export default withRouter(App);
