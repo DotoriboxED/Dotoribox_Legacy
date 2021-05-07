@@ -6,12 +6,13 @@ const api = axios.create({
 });
 
 export const SampleApi = {
-    getList: (body) => api.post("", body),//샘플 리스트 가져오기 page2
-    getInfo: (body) => api.post("", body),//선택된 샘플 정보 가져오기
-    postInfo: (body) => api.post("")//택시번호, 샘플, 유저정보 디비에 저장
+    getList: () => api.post("http://localhost:5000/api/sample"),//샘플 리스트 가져오기 page2
+    getInfo: (body, id) => api.post("http://localhost:5000/api/sample/" + id, body),//선택된 샘플 정보 가져오기
+    getInfoImage: (id) => api.get("http://localhost:5000/api/sample/" + id + "/image"),
+    postInfo: (body, id) => api.post("http://localhost:5000/api/review/" + id, body)//택시번호, 샘플, 유저정보 디비에 저장
 }
 export const ReviewApi = {
-  postReview: (body) => api.post("")//작성된 리뷰 디비에 저장
+  postReview: (body, id) => api.post("http://localhost:5000/api/review/" + id + "/evaluate", body)//작성된 리뷰 디비에 저장
 }
 
 
