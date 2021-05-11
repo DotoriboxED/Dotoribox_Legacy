@@ -2,7 +2,7 @@ import React from 'react';
 import Logo from '../Logo.js';
 import Userinfo from '../components/Userinfo';
 
-function App() {
+function Samplepage() {
   return (
     <div>
       <Logo></Logo>
@@ -11,4 +11,4 @@ function App() {
   );
 }
 
-export default App;
+export default Samplepage;
