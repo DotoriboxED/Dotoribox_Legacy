@@ -25,6 +25,7 @@ const Button=styled.button`
   color: #ffffff;
   border:none;
 `
+
 function Sample() {
   const location=useLocation();
   const history = useHistory();
@@ -35,12 +36,8 @@ function Sample() {
     <main>
       {Code}
       <Card></Card>
-      <Card></Card>
-      <Button onClick={() => {history.push({
-          pathname:'./userinfo',
-          state:{Code:Code,
-                 Sample:Sample}
-        })}}>카트로 이동하기</Button>
+      
+      
     </main>
   );
 }

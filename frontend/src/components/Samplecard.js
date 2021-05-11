@@ -1,15 +1,19 @@
-import React from 'react';
+import React,{useState} from 'react';
 import styled from 'styled-components';
 
 const Each= styled.p`
   text-align: center;
   margin: auto;
   width: 90%;
-  height: 8.063rem;
+  height: 15rem;
   justify-content:center;
   bottom: 0;
+  border: 0.2rem solid;
+  margin-bottom:0.4rem;
+  background-color:white;
+
 `
-const name= styled.p`
+const Name= styled.div`
   font-family: SpoqaHanSansNeo;
   font-size: 0.438rem;
   font-weight: bold;
@@ -17,10 +21,10 @@ const name= styled.p`
   font-style: normal;
   line-height: 1.43;
   letter-spacing: -0.07px;
-  text-align: left;
   color: black;
+  margin: auto;
 `
-const price= styled.p`
+const Price= styled.div`
   font-family: SpoqaHanSansNeo;
   font-size: 0.281rem;
   font-weight: normal;
@@ -28,15 +32,16 @@ const price= styled.p`
   font-style: normal;
   line-height: 1.44;
   letter-spacing: -0.05px;
-  text-align: left;
   color: #0035ff;
+  margin: auto;
+
 `
 
 const Button= styled.button`
-  width:100%;
-  height: 1.125rem;
+  width:80%;
+  height: 2rem;
   padding: 0.313rem 3.438rem 0.281rem 3.375rem;
-  background-color: #e7713f;
+  background-color: #2e2e2e;
   font-family: SpoqaHanSansNeo;
   font-size: 0.344rem;
   font-weight: normal;
@@ -45,14 +50,37 @@ const Button= styled.button`
   line-height: 1.55;
   letter-spacing: -0.06px;
   text-align: center;
-  color: #ffffff;
+  color:#ffffff ;
+  border:none;
+  
 `
-function Card() {
-  return (
-    <Each>
-     <name>술이싹 새싹보리 </name>
-     <price>0원</price>
-     <Button>지금 가져가기</Button>
+const Bottom=styled.div`
+  width:100%;
+  display: flex;
+  
+  `
+const Info=styled.div`
+  width:20%;
+  background-color: black;
+  height: 2rem;`
+
+const Card = (props) =>{
+  const [background,setbackground]=useState("#2e2e2e");
+
+  function changeColor(){
+    if (background==="#2e2e2e")
+      setbackground("#e7713f");
+    else
+      setbackground("#2e2e2e");
+  }
+    return(
+    <Each style={{ borderColor: background}}>
+     <Name>{props.name}</Name>
+     <Price>{props.price}</Price>
+     <Bottom>
+     <Button onClick={changeColor} style={{ backgroundColor: background}} >지금 가져가기</Button>
+     <Info></Info>
+     </Bottom>
     </Each>
   );
 }
