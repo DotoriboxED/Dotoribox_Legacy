@@ -39,9 +39,9 @@ router.post('/', async (req: Request, res: Response) => {
     if (review) data.review = review;
 
     try {
-        await db.Customer.create(data);
+        const item = await db.Customer.create(data);
 
-        res.sendStatus(201);
+        res.json({ id: item.id });
     } catch (err) {
         sendErrorResponse(res, 500, 'unknown_error', err);
     }
