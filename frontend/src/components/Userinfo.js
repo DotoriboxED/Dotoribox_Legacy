@@ -1,7 +1,8 @@
 import logo from '../image/logo.png';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory} from "react-router-dom";
+import Popup from './SubmitPopup';
 
 const Black = styled.div`
   background-color: black;
@@ -82,6 +83,10 @@ const Price=styled.p`
 `
 function App() {
   const history = useHistory();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const open = () => { setIsOpen(true); }
+  const close = () => { setIsOpen(false); }
 
   return (
     <div>
@@ -92,7 +97,9 @@ function App() {
         <Title>샘플 이름</Title>
         <Image src={logo}></Image>
         <Tag>샘플 설명</Tag>
-        <Button onClick={() => {history.push("/review")}}>샘플 가져가기</Button>
+        <Button onClick={() => {open()}}>샘플 가져가기</Button>
+        <Popup isOpen={isOpen} close={close} />
+        
       </Under>
     </div>
   );
