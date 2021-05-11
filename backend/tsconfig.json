@@ -70,6 +70,6 @@
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true  
   },
-  "include": ["app.ts, bin/www.ts", "router/**/*.ts"],
+  "include": ["app.ts", "bin/www.ts", "router/**/*.ts"],
   "exclude": ["node_modules"]
 }
