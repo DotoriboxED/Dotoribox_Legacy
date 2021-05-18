@@ -3,7 +3,8 @@ import React ,{useState} from 'react';
 import { useHistory} from "react-router-dom";
 import styled from 'styled-components';
 
-
+import { SampleApi } from '../api';
+import Alert from './TaxiCodePopup';
 
 const Upper= styled.div`
   width:100%;
@@ -109,6 +110,7 @@ const Hr=styled.hr`
 
 function Inputcode() {
   const [Code, setCode] = useState();
+  const [isExist, setIsExist] = useState(true);
   const history = useHistory();
   
   return (
@@ -125,13 +127,18 @@ function Inputcode() {
           onChange={({ target: {value}} )=>setCode(value)}
           ></Input>
         <br></br>
-        <Button onClick={() => {history.push({
-          pathname:'./selectsample',
-          state:{Code:Code}
-        })}}>Enter</Button>
+        <Button onClick={() => {
+          SampleApi.getTaxiNum(parseInt(Code, 10)).then((res) => {
+            history.push({ pathname:'./selectsample', state:{Code:Code}})
+          }).catch((err) => {
+            setIsExist(false);
+          });
+        }
+        }>Enter</Button>
       </Upper>
       <Under >
       </Under>
+      <Alert isExist={isExist} setIsExist={setIsExist} />
     </Header>
   );
 }

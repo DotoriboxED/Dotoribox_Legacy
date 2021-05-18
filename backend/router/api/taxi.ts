@@ -55,7 +55,7 @@ router.get('/:taxiId', async (req: Request, res: Response) => {
             isDeleted: false
         });
 
-        if (!result || !result.isDeleted)
+        if (!result || result.isDeleted)
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         res.json(result);
