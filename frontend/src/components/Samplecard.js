@@ -10,6 +10,7 @@ const Each= styled.p`
   bottom: 0;
   border: 0.2rem solid;
   margin-bottom:0.4rem;
+  margin-top:01.rem;
   background-color:white;
 
 `
@@ -62,8 +63,14 @@ const Bottom=styled.div`
 const Info=styled.div`
   width:20%;
   background-color: black;
-  height: 2rem;`
-
+  height: 2rem;
+`
+const Image = styled.img`
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  margin:auto;
+`;
 const Card = (props) =>{
   const [background,setbackground]=useState("#2e2e2e");
 
@@ -75,6 +82,7 @@ const Card = (props) =>{
   }
     return(
     <Each style={{ borderColor: background}}>
+     <Image src={props.image}></Image>
      <Name>{props.name}</Name>
      <Price>{props.price}</Price>
      <Bottom>

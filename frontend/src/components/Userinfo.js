@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory} from "react-router-dom";
 import Popup from './SubmitPopup';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@material-ui/core/Button';
+import Slider from '@material-ui/core/Slider';
 
 const Black = styled.div`
   background-color: black;
@@ -23,7 +26,7 @@ const Name=styled.p`
   margin:auto;
   text-align:center;
 `
-const Button=styled.button`
+const ClickButton=styled.button`
   width: 80%;
   height: 1.406rem;
   margin: 1.281rem 0.063rem 0 0;
@@ -37,6 +40,7 @@ const Button=styled.button`
   line-height: 1.46;
   letter-spacing: -0.07px;
   color: #ffffff;
+  border:none;
 `
 const Tag=styled.p`
   font-family: SpoqaHanSansNeo;
@@ -81,27 +85,100 @@ const Price=styled.p`
   margin:auto;
   padding-top:4rem;
 `
+const Body=styled.div`
+  text-align: center;
+  margin: auto;
+`
+const Section=styled.div`
+  text-align: center;
+  height:3rem;
+  margin: auto;
+  width:80%;
+  border:1px solid #d3d3d3;
+  margin-bottom:1rem;
+`
+const Column=styled.div`
+  width:3rem;
+  height:3rem;
+  text-align: center;
+  margin: auto;
+  float:left;
+  color:#707070;
+  border-right:1px solid #d3d3d3;
+`
 function App() {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMale,setisMale] = useState();
+  const [man,setMan]=useState("white");
+  const [woman,setWoman]=useState("white");
 
   const open = () => { setIsOpen(true); }
   const close = () => { setIsOpen(false); }
 
+  function setgender(value){
+    setisMale(value);
+    console.log(isMale);
+    if (isMale){
+      setMan("#e7713f")
+      setWoman("white")
+    }else{
+      setMan("white")
+      setWoman("#e7713f")
+    }
+  }
+  function valueLabelFormat(value) {
+    return `${value}대`;
+  }
+  const [value, setValue] = React.useState(1);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
-    <div>
+    <Body>
       <Black>
-        <Name>sample name</Name>
+        <Name>sample cart</Name>
       </Black>
       <Under>
         <Title>샘플 이름</Title>
         <Image src={logo}></Image>
         <Tag>샘플 설명</Tag>
-        <Button onClick={() => {open()}}>샘플 가져가기</Button>
+
+      <Section>
+        <Column>
+          성별
+        </Column>
+        <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{width:"10rem"}}>
+          <Button onClick={()=>setgender(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
+          <Button onClick={()=>setgender(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
+        </ButtonGroup>
+      </Section>
+
+      <Section>
+        <Column>
+          연령대
+        </Column>
+        <Slider style={{width:"4rem",margin:"auto"}}
+          value={value}
+          min={0}
+          step={10}
+          max={100}
+          scale={(x) => x }
+          getAriaValueText={valueLabelFormat}
+          valueLabelFormat={valueLabelFormat}
+          onChange={handleChange}
+          valueLabelDisplay="auto"
+          aria-labelledby="non-linear-slider"
+          style={{color:"#e7713f",width:"10rem"}}
+        />
+      </Section>
+        <ClickButton onClick={() => {open()}}>샘플 가져가기</ClickButton>
         <Popup isOpen={isOpen} close={close} />
         
       </Under>
-    </div>
+    </Body>
   );
 }
 
