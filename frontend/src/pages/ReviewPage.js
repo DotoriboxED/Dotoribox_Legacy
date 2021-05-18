@@ -1,19 +1,20 @@
 
-import React ,{useState} from 'react';
-import { useHistory} from "react-router-dom";
+import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
 import styled from 'styled-components';
+import Stars from '../components/Star';
+import { ReviewApi } from '../api';
+import { ReactComponent as Star } from '../image/star.svg';
 
 
-
-const Upper= styled.div`
-  width:100%;
+const Upper = styled.div`
+  width:90%;
   height:30%;
   justify-content: center;
   margin:auto;
   text-align: left;
   `
-const Under= styled.div`
-  
+const Under = styled.div`
   width:100%;
   height:70%;
   margin:auto;
@@ -21,13 +22,13 @@ const Under= styled.div`
   background-repeat : no-repeat;
   background-position: center;
   `
-const Header= styled.div`
+const Header = styled.div`
   background-color:black;
   width:100%;
   height:45rem;
   text-align : center;
 `
-const Title1=styled.p`
+const Title1 = styled.p`
   font-family: SpoqaHanSansNeo;
   font-size: 3rem;
   font-weight: 100;
@@ -38,10 +39,9 @@ const Title1=styled.p`
   text-align: left;
   color: #ffffff;
   margin:auto;
-  margin-left:2rem;
   padding-top:4rem;
 `
-const Title2=styled.p`
+const Title2 = styled.p`
   font-family: SpoqaHanSansNeo;
   font-size: 1rem;
   font-weight: 300;
@@ -52,29 +52,36 @@ const Title2=styled.p`
   text-align: left;
   color: #ffffff;
   margin:auto;
-  margin-left:2rem;
   padding-top:0.5rem;
   
 `
 
-const Input=styled.input`
-  margin:auto;
-  margin-left:2rem;
-  text-align: left;
-  width: 40%;
-  height: 1.188rem;
-  padding: 0.313rem 9.25rem 0.313rem 0.5rem;
+const StarBox = styled.div`
+  width: 100%;
+  display: flex;
+`
+
+const InputBox = styled.div`
   border: solid 0.5px #a3a0a0;
+  height: 16rem;
+`
+
+const Input = styled.textarea`
+  margin:auto;
+  text-align: left;
+  width: 95%;
+  height: 15.374rem;
+  padding: 0.313rem 0.5rem 0.313rem 0.5rem;
   background-color:transparent;
   padding-top:0.5rem;
   color:#e7713f;
+  border: none;
 `
-const Button=styled.button`
+const Button = styled.button`
   width: 5rem;
   height: 2rem;
-  margin: 0.625rem 7.938rem 0.281rem 0.531rem;
+  margin: 0.625rem 7.938rem 0.281rem 0rem;
   background-color: #ffffff;
-  margin-left:2rem;
   font-family: SpoqaHanSansNeo;
   font-size: 0.313rem;
   font-weight: 300;
@@ -85,18 +92,22 @@ const Button=styled.button`
   padding-top:0.6rem;
 `
 
-const Hr=styled.hr`
-  width: 80%;
+const Hr = styled.hr`
+  width: 100%;
   color: #e7713f;
   margin-top:0.9rem;
   
 `
 
-
 function Reviewpage() {
   const [Review, setReview] = useState("");
+  const [Rating, setRating] = useState(5);
   const history = useHistory();
-  
+
+  const onStarClick = (nextValue, prevValue) => {
+    setRating(nextValue)
+  }
+
   return (
     <Header>
       <Upper>
@@ -104,16 +115,29 @@ function Reviewpage() {
         <Title2>기사님은 목적지 도착 후 하차할 때 샘플을 전달해주실 거에요.</Title2>
         <Title2>샘플과 함께 오늘도 좋은하루 되세요</Title2>
         <Hr></Hr>
+        <StarBox>
+          {[1, 2, 3, 4, 5].map((idx) => {
+            return (
+              <Stars
+                index={idx}
+                rating={Rating}
+                onSaveRating={setRating}
+              />
+            )
+          })}
+        </StarBox>
         <Title2>도토리박스와 함께한 이동은 어떠셨나요?</Title2>
         <Title2>잠시 시간을 내어 알려주세요(선택)</Title2>
-        <Input 
-          placeholder="의견을 자유롭게 적어주세요" 
-          placeholderTextColor="#a3a0a0"
-          value={Review}
-          onChange={({ target: {value}} )=>setReview(value)}
+        <InputBox>
+          <Input
+            placeholder="의견을 자유롭게 적어주세요"
+            placeholderTextColor="#a3a0a0"
+            value={Review}
+            onChange={({ target: { value } }) => setReview(value)}
           ></Input>
+        </InputBox>
         <br></br>
-        <Button onClick={() => {history.push("/")}}>Enter</Button>
+        <Button onClick={() => { history.push("/"); ReviewApi.postReview({ review: Review, score: Rating}); }}>Enter</Button>
       </Upper>
       <Under >
       </Under>
