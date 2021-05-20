@@ -1,5 +1,5 @@
 import logo from '../image/logo.png';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useHistory} from "react-router-dom";
 import Popup from './SubmitPopup';
@@ -116,17 +116,19 @@ function App() {
   const open = () => { setIsOpen(true); }
   const close = () => { setIsOpen(false); }
 
-  function setgender(value){
-    setisMale(value);
-    console.log(isMale);
-    if (isMale){
-      setMan("#e7713f")
-      setWoman("white")
-    }else{
-      setMan("white")
-      setWoman("#e7713f")
+  useEffect(() => {
+    if (isMale === undefined) {
+      setMan("white");
+      setWoman("white");
+    } else if (isMale === true){
+      setMan("#e7713f");
+      setWoman("white");
+    } else {
+      setMan("white");
+      setWoman("#e7713f");
     }
-  }
+  }, [isMale])
+  
   function valueLabelFormat(value) {
     return `${value}대`;
   }
@@ -151,8 +153,8 @@ function App() {
           성별
         </Column>
         <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{width:"10rem"}}>
-          <Button onClick={()=>setgender(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
-          <Button onClick={()=>setgender(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
+          <Button onClick={()=>setisMale(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
+          <Button onClick={()=>setisMale(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
         </ButtonGroup>
       </Section>
 
