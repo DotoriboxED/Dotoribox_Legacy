@@ -137,7 +137,7 @@ function Reviewpage() {
           ></Input>
         </InputBox>
         <br></br>
-        <Button onClick={() => { history.push("/"); ReviewApi.postReview({ review: Review, score: Rating}); }}>Enter</Button>
+        <Button onClick={() => { history.push("/"); ReviewApi.postReview({ review: Review, score: Rating }); }}>Enter</Button>
       </Upper>
       <Under >
       </Under>

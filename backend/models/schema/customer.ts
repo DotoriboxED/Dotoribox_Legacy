@@ -56,7 +56,26 @@ export default function (autoIncrement: any) {
         }
     }, {
         timestamps: true
-    })
+    });
+
+    const taxiSchema = new mongoose.Schema({
+        id: {
+            type: Number
+        },
+        taxiNumber: {
+            type: Number,
+            required: true,
+            unique: true
+        },
+        passenger: {
+            type: Number,
+            default: 0
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
+        }
+    });
 
     customerSchema.plugin(autoIncrement.plugin, {
         model: 'Customer',
@@ -72,11 +91,20 @@ export default function (autoIncrement: any) {
         increment: 1
     });
 
+    taxiSchema.plugin(autoIncrement.plugin, {
+        model: 'Taxi',
+        field: 'id',
+        startAt: 1,
+        increment: 1
+    });
+
     const Customer = mongoose.model('Customer', customerSchema);
     const Sample = mongoose.model('Sample', sampleSchema);
+    const Taxi = mongoose.model('Taxi', taxiSchema);
 
     return {
         Customer,
-        Sample
+        Sample,
+        Taxi
     }
 }
