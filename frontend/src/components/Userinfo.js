@@ -130,19 +130,14 @@ function App() {
 
   const open = () => { setIsOpen(true); }
   const close = () => { setIsOpen(false); }
-  
-  useEffect(()=>{
-    getProduct(Sample)
-    getImage(Sample)
-  },[])
 
   async function getProduct(sample){
-    
-    await SampleApi.getInfo(body,sample).then(async (res) => {
-      console.log(res.data);
-      setproduct(res.data);
-    });
-    
+      SampleApi.getInfo(sample).then((res) => {
+        console.log(res.data);
+        setproduct(res.data);
+      }).catch((err) => {
+        console.log(err);
+      });
   }
   async function getImage(sample){
     
@@ -152,6 +147,11 @@ function App() {
     });
     
   }
+
+  useEffect(()=>{
+    getProduct(Sample)
+    getImage(Sample)
+  },[product])
 
   useEffect(() => {
     if (isMale === undefined) {
@@ -182,9 +182,13 @@ function App() {
         <Name>sample cart</Name>
       </Black>
       <Under>
-        <Title>{product.sampleName}</Title>
-        <Image src={logo}></Image>
-        <Tag>{product.explain}</Tag>
+        {
+          product && <div>
+            <Title>{product.sampleName}</Title>
+            <Image src={logo}></Image>
+            <Tag>{product.explain}</Tag>
+          </div>
+        }
 
       <Section>
         <Column>
@@ -192,8 +196,8 @@ function App() {
         </Column>
 
         <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{width:"10rem",verticalAlign:"middle",textAlign:"center"}}>
-          <Button onClick={()=>setgender(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
-          <Button onClick={()=>setgender(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
+          <Button onClick={()=>setisMale(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
+          <Button onClick={()=>setisMale(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
 
         </ButtonGroup>
       </Section>
