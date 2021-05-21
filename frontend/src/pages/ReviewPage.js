@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Stars from '../components/Star';
 import { ReviewApi } from '../api';
 import { ReactComponent as Star } from '../image/star.svg';
-
+import Logo from '../Logo'
 
 const Upper = styled.div`
   width:90%;
@@ -30,7 +30,7 @@ const Header = styled.div`
 `
 const Title1 = styled.p`
   font-family: SpoqaHanSansNeo;
-  font-size: 3rem;
+  font-size: 2.1rem;
   font-weight: 100;
   font-stretch: normal;
   font-style: normal;
@@ -40,10 +40,11 @@ const Title1 = styled.p`
   color: #ffffff;
   margin:auto;
   padding-top:4rem;
+  margin-bottom: 1rem;
 `
 const Title2 = styled.p`
   font-family: SpoqaHanSansNeo;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 300;
   font-stretch: normal;
   font-style: normal;
@@ -63,14 +64,15 @@ const StarBox = styled.div`
 
 const InputBox = styled.div`
   border: solid 0.5px #a3a0a0;
-  height: 16rem;
+  height: 14rem;
+  margin-top: 1rem;
 `
 
 const Input = styled.textarea`
   margin:auto;
   text-align: left;
   width: 95%;
-  height: 15.374rem;
+  height: 13rem;
   padding: 0.313rem 0.5rem 0.313rem 0.5rem;
   background-color:transparent;
   padding-top:0.5rem;
@@ -89,7 +91,6 @@ const Button = styled.button`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: -0.05px;
-  padding-top:0.6rem;
 `
 
 const Hr = styled.hr`
@@ -110,6 +111,7 @@ function Reviewpage() {
 
   return (
     <Header>
+      <Logo/>
       <Upper>
         <Title1>Thank you</Title1>
         <Title2>기사님은 목적지 도착 후 하차할 때 샘플을 전달해주실 거에요.</Title2>

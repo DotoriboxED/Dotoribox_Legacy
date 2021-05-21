@@ -1,11 +1,11 @@
 import React ,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 
-const Each= styled.p`
+const Each= styled.div`
   text-align: center;
-  margin: auto;
+  margin: 1em 1em 0 1em;
   width: 90%;
-  height: 15rem;
+  height: 16.1rem;
   justify-content:center;
   bottom: 0;
   border: 0.2rem solid;
@@ -16,7 +16,7 @@ const Each= styled.p`
 `
 const Name= styled.div`
   font-family: SpoqaHanSansNeo;
-  font-size: 0.438rem;
+  font-size: 0.9rem;
   font-weight: bold;
   font-stretch: normal;
   font-style: normal;
@@ -27,7 +27,7 @@ const Name= styled.div`
 `
 const Price= styled.div`
   font-family: SpoqaHanSansNeo;
-  font-size: 0.281rem;
+  font-size: 0.75rem;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
@@ -40,11 +40,11 @@ const Price= styled.div`
 
 const Button= styled.button`
   width:80%;
-  height: 2rem;
+  height: 2.5rem;
   padding: 0.313rem 3.438rem 0.281rem 3.375rem;
   background-color: #2e2e2e;
   font-family: SpoqaHanSansNeo;
-  font-size: 0.344rem;
+  font-size: 0.8rem;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
@@ -53,6 +53,7 @@ const Button= styled.button`
   text-align: center;
   color:#ffffff ;
   border:none;
+  vertical-align: bottom;
   
 `
 const Bottom=styled.div`
@@ -62,19 +63,28 @@ const Bottom=styled.div`
   `
 const Info=styled.div`
   width:20%;
-  background-color: black;
-  height: 2rem;
+  background-color: white;
+  height: 2.5rem;
 `
 const Image = styled.img`
-  width: 2rem;
-  height: 2rem;
+  width: 100%;
+  height: 11.2rem;
   justify-content: center;
   margin:auto;
+  overflow: hidden;
 `;
 const Card = (props) =>{
+  const { setSelect, select, id } = props;
+
   useEffect(()=>{
     changeSelect(props.select)
   },[])
+  
+  useEffect(() => {
+    console.log(select);
+    if (select === props.id) setbackground('#e7713f');
+    else setbackground('#2e2e2e')
+  }, [select])
   const [background,setbackground]=useState("#2e2e2e");
   
   function changeSelect(select){
@@ -85,11 +95,11 @@ const Card = (props) =>{
   }
     return(
     <Each style={{ borderColor: background}}>
-     <Image src={props.image}></Image>
+     <Image src={'http://localhost:5000/api/sample/' + props.id + '/image'}></Image>
      <Name>{props.name}</Name>
-     <Price>{props.price}</Price>
+     <Price>{props.price}원</Price>
      <Bottom>
-     <Button style={{ backgroundColor: background}} >지금 가져가기</Button>
+     <Button style={{ backgroundColor: background}} onClick={() => { setSelect(props.id); }} ><b>지금 가져가기</b></Button>
      <Info></Info>
      </Bottom>
     </Each>

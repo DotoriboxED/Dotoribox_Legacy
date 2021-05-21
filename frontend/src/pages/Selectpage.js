@@ -9,10 +9,10 @@ import Background from '../image/background3.png';
 
 const Button=styled.button`
   width: 90%;
-  height: 2rem;
+  height: 2.5rem;
   background-color: #e7713f;
   font-family: SpoqaHanSansNeo;
-  font-size: 0.406rem;
+  font-size: 0.8rem;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
@@ -23,17 +23,22 @@ const Button=styled.button`
   position:fixed;
   left:1rem;
   bottom:0;
+  margin: 0 0 1rem 0;
 `
 const Main=styled.div`
   text-align: center;
   background-image: url(${Background});
-  height:45rem;
+  height:52rem;
+`
+
+const List = styled.div`
+  margin-top: 1em;
 `
 
 function App() {
   const [Products,setProducts]=useState([]);
   const [Images,setImages]=useState();
-  const [Select,setSelect]=useState("6094d30c4d617f142e340368");
+  const [Select,setSelect]=useState();
   const history = useHistory();
   const location = useLocation();
 
@@ -72,6 +77,7 @@ function App() {
                    price={product.price}
                    info={product.explain}
                    select={Select}
+                   setSelect={setSelect}
                    id={product.id}
                    />
   }));
@@ -79,13 +85,15 @@ function App() {
   return (
     <Main >
       <Logo></Logo>
+      <List>
       {renderLists}
+      </List>
       
       <Button onClick={() => {history.push({
           pathname:'./userinfo',
           state:{Code:Code,
                  Sample:Select}
-        })}}>카트로 이동하기</Button>
+        })}}><b>카트로 이동하기</b></Button>
        
     </Main>
   );

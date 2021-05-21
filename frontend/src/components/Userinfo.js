@@ -11,7 +11,7 @@ import {SampleApi} from "../api"
 
 const Black = styled.div`
   background-color: black;
-  height: 5rem;
+  height: 3.25rem;
   justify-content: center;
   margin:auto;
   vertical-align:middle;
@@ -22,20 +22,21 @@ const Under= styled.div`
   text-align : center;
   
 `
-const Name=styled.p`
+const Name=styled.div`
   color:white;
   font-size:1rem;
-  margin:auto;
+  margin: 0 0 0 0;
   text-align:center;
+  background-color: black;
 `
 const ClickButton=styled.button`
-  width: 80%;
-  height: 1.406rem;
+  width: 90%;
+  height: 2.5rem;
 
   
   background-color: #e7713f;
   font-family: SpoqaHanSansNeo;
-  font-size: 0.406rem;
+  font-size: 0.806rem;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
@@ -43,10 +44,10 @@ const ClickButton=styled.button`
   letter-spacing: -0.07px;
   color: #ffffff;
   border:none;
-  bottom:0;
+  bottom:1.3rem;
   position:fixed;
   text-align:center;
-  left:10%;
+  left: 1rem;
 `
 const Tag=styled.p`
   font-family: SpoqaHanSansNeo;
@@ -56,16 +57,17 @@ const Tag=styled.p`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: -0.05px;
-  color: #a3a0a0;
+  color: #131010;
   margin:auto;
+  margin-bottom: 0.5rem;
 
   padding-top:0.5rem;
-  padding-bottom:0.5rem;
+  padding-bottom:2.1rem;
 `
 
 const Title=styled.p`
   font-family: SpoqaHanSansNeo;
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 100;
   font-stretch: normal;
   font-style: normal;
@@ -73,23 +75,25 @@ const Title=styled.p`
   letter-spacing: 0.53px;
   color: black;
   margin:auto;
-  padding-top:4rem;
+  padding-top:3.3rem;
+  padding-bottom: 4rem;
 `
 const Image=styled.img`
   width: 5.125rem;
   height: 5.313rem;
+  margin-bottom: 2rem;
 `
-const Price=styled.p`
+const Price= styled.div`
   font-family: SpoqaHanSansNeo;
-  font-size: 2rem;
-  font-weight: 100;
+  font-size: 0.75rem;
+  font-weight: normal;
   font-stretch: normal;
   font-style: normal;
-  line-height: 1.49;
-  letter-spacing: 0.53px;
-  color: black;
-  margin:auto;
-  padding-top:4rem;
+  line-height: 1.44;
+  letter-spacing: -0.05px;
+  color: #0035ff;
+  margin: auto;
+  margin-bottom: 3rem;
 `
 const Body=styled.div`
   text-align: center;
@@ -101,20 +105,40 @@ const Section=styled.div`
   margin: auto;
   width:80%;
   text-align:middle;
-  margin-bottom:2rem;
   text-align: center;
   vertical-align:middle;
 `
 const Column=styled.div`
   width:3rem;
   height:3rem;
-  text-align: center;
+  text-align: left;
+  font-size: 0.9rem;
   margin: auto;
   float:left;
   color:#707070;
   border-right:1px solid #d3d3d3;
-
 `
+
+const Warning=styled.div`
+    &:before, &:after {
+        content: "";
+        flex-grow: 1;
+        background: rgba(0, 0, 0, 0.35);
+        height: 1px;
+        font-size: 0px;
+        line-height: 0px;
+        margin: 0px 16px;
+    }
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    color: rgba(0, 0, 0, 1);
+    font-size: 12px;
+    font-weight: bold;
+    margin: 1em 0em;
+    margin-bottom: 2rem;
+`
+
 function App() {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState(false);
@@ -151,7 +175,7 @@ function App() {
   useEffect(()=>{
     getProduct(Sample)
     getImage(Sample)
-  },[product])
+  },[])
 
   useEffect(() => {
     if (isMale === undefined) {
@@ -179,29 +203,34 @@ function App() {
   return (
     <Body>
       <Black>
-        <Name>sample cart</Name>
+      </Black>
+      <Name>SAMPLE CART</Name>
+      <Black>
       </Black>
       <Under>
         {
           product && <div>
-            <Title>{product.sampleName}</Title>
+            <Title><b>{product.sampleName}</b></Title>
             <Image src={logo}></Image>
             <Tag>{product.explain}</Tag>
+            <Price><b>{product.price}원</b></Price>
           </div>
         }
+
+      <Warning>
+        샘플 수령을 위해 선택해 주세요.
+      </Warning>
 
       <Section>
         <Column>
           <p>성별</p>
         </Column>
-
         <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{width:"10rem",verticalAlign:"middle",textAlign:"center"}}>
           <Button onClick={()=>setisMale(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
           <Button onClick={()=>setisMale(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
 
         </ButtonGroup>
       </Section>
-
       <Section>
         <Column>
           <p>연령대</p>
