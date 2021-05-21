@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React ,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 
 const Each= styled.p`
@@ -72,10 +72,13 @@ const Image = styled.img`
   margin:auto;
 `;
 const Card = (props) =>{
+  useEffect(()=>{
+    changeSelect(props.select)
+  },[])
   const [background,setbackground]=useState("#2e2e2e");
-
-  function changeColor(){
-    if (background==="#2e2e2e")
+  
+  function changeSelect(select){
+    if (select===props.id)
       setbackground("#e7713f");
     else
       setbackground("#2e2e2e");
@@ -86,7 +89,7 @@ const Card = (props) =>{
      <Name>{props.name}</Name>
      <Price>{props.price}</Price>
      <Bottom>
-     <Button onClick={changeColor} style={{ backgroundColor: background}} >지금 가져가기</Button>
+     <Button style={{ backgroundColor: background}} >지금 가져가기</Button>
      <Info></Info>
      </Bottom>
     </Each>
