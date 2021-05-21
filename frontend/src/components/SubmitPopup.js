@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { useHistory} from "react-router-dom";
 import styled from 'styled-components';
+import {SampleApi} from "../api"
 
 const Button=styled.button`
   width: 80%;
@@ -77,6 +78,11 @@ const Title=styled.div`
 function App(props) {
     const history = useHistory();
 
+    function saveinfo(code,sample,gender,age){
+      history.push("/review");
+      SampleApi.postReview({ taxiNumber: code, sampleCode: sample,isMale: gender, age: age});
+    }
+    
     return (
         <div>
             {
@@ -85,7 +91,7 @@ function App(props) {
                         <Popup>
                             <Title>주의사항</Title>
                             <Tag>샘플 수령하기 전에<br/>상자에 샘플이 있는지<br/>반드시 확인해주세요</Tag>
-                            <Button onClick={() => {history.push("/review")}}>확인했습니다</Button>
+                            <Button onClick={saveinfo(props.code,props.sample,props.gender,props.age)}>확인했습니다</Button>
                         </Popup>
                     </Background>
                 )

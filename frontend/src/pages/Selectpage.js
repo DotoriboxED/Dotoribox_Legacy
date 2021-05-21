@@ -33,7 +33,12 @@ const Main=styled.div`
 function App() {
   const [Products,setProducts]=useState([]);
   const [Images,setImages]=useState();
+  const [Select,setSelect]=useState("6094d30c4d617f142e340368");
   const history = useHistory();
+  const location = useLocation();
+
+  const Code = location.state.Code;
+
   useEffect(()=>{
     getProduct()
   },[])
@@ -42,7 +47,6 @@ function App() {
     
     await SampleApi.getList().then(async (res) => {
       console.log(res.data);
-      
       setProducts(res.data);
       
     });
@@ -51,18 +55,25 @@ function App() {
   async function getImage(id){
     
     await SampleApi.getInfoImage(id).then(async (res) => {
-      console.log(res.data);
+     
       setImages(res.data);
     });
     
   }
-  const renderLists=(Products.map((product,index)=>{
+  function changeSelect(id){
+    setSelect(id);
+  }
 
+  const renderLists=(Products.map((product,index)=>{
+  
     getImage(product.id)
     return <Sample image={Images}
                    name={product.sampleName}
                    price={product.price}
-                   info={product.explain}/>
+                   info={product.explain}
+                   select={Select}
+                   id={product.id}
+                   />
   }));
 
   return (
@@ -72,8 +83,8 @@ function App() {
       
       <Button onClick={() => {history.push({
           pathname:'./userinfo',
-          state:{Code:"12",
-                 Sample:"123"}
+          state:{Code:Code,
+                 Sample:Select}
         })}}>카트로 이동하기</Button>
        
     </Main>

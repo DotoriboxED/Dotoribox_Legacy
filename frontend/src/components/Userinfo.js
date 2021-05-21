@@ -6,6 +6,8 @@ import Popup from './SubmitPopup';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
+import {useLocation} from 'react-router';
+import {SampleApi} from "../api"
 
 const Black = styled.div`
   background-color: black;
@@ -16,9 +18,9 @@ const Black = styled.div`
 `;
 const Under= styled.div`
   width:100%;
-  border: solid 0.5px #707070;
   background-color: white;
   text-align : center;
+  
 `
 const Name=styled.p`
   color:white;
@@ -29,8 +31,8 @@ const Name=styled.p`
 const ClickButton=styled.button`
   width: 80%;
   height: 1.406rem;
-  margin: 1.281rem 0.063rem 0 0;
-  padding: 0.406rem 4.063rem 0.406rem 4.156rem;
+
+  
   background-color: #e7713f;
   font-family: SpoqaHanSansNeo;
   font-size: 0.406rem;
@@ -41,6 +43,10 @@ const ClickButton=styled.button`
   letter-spacing: -0.07px;
   color: #ffffff;
   border:none;
+  bottom:0;
+  position:fixed;
+  text-align:center;
+  left:10%;
 `
 const Tag=styled.p`
   font-family: SpoqaHanSansNeo;
@@ -91,11 +97,13 @@ const Body=styled.div`
 `
 const Section=styled.div`
   text-align: center;
-  height:3rem;
+  height:4rem;
   margin: auto;
   width:80%;
-  border:1px solid #d3d3d3;
-  margin-bottom:1rem;
+  text-align:middle;
+  margin-bottom:2rem;
+  text-align: center;
+  vertical-align:middle;
 `
 const Column=styled.div`
   width:3rem;
@@ -105,16 +113,45 @@ const Column=styled.div`
   float:left;
   color:#707070;
   border-right:1px solid #d3d3d3;
+
 `
 function App() {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState(false);
   const [isMale,setisMale] = useState();
+  const [product,setproduct] = useState();
+  const [age,setAge]=useState();
+  const [body,setBody]=useState();
   const [man,setMan]=useState("white");
   const [woman,setWoman]=useState("white");
+  const location = useLocation();
+  const Code = location.state.Code;
+  const Sample=location.state.Sample;
 
   const open = () => { setIsOpen(true); }
   const close = () => { setIsOpen(false); }
+  
+  useEffect(()=>{
+    getProduct(Sample)
+    getImage(Sample)
+  },[])
+
+  async function getProduct(sample){
+    
+    await SampleApi.getInfo(body,sample).then(async (res) => {
+      console.log(res.data);
+      setproduct(res.data);
+    });
+    
+  }
+  async function getImage(sample){
+    
+    await SampleApi.getInfoImage(sample).then(async (res) => {
+      
+
+    });
+    
+  }
 
   useEffect(() => {
     if (isMale === undefined) {
@@ -135,34 +172,37 @@ function App() {
   const [value, setValue] = React.useState(1);
 
   const handleChange = (event, newValue) => {
+    setAge(newValue);
     setValue(newValue);
   };
-
+  
   return (
     <Body>
       <Black>
         <Name>sample cart</Name>
       </Black>
       <Under>
-        <Title>샘플 이름</Title>
+        <Title>{product.sampleName}</Title>
         <Image src={logo}></Image>
-        <Tag>샘플 설명</Tag>
+        <Tag>{product.explain}</Tag>
 
       <Section>
         <Column>
-          성별
+          <p>성별</p>
         </Column>
-        <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{width:"10rem"}}>
-          <Button onClick={()=>setisMale(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
-          <Button onClick={()=>setisMale(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
+
+        <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{width:"10rem",verticalAlign:"middle",textAlign:"center"}}>
+          <Button onClick={()=>setgender(true)} style={{background:`${man}`,color:"#d3d3d3",width:"7rem"}}>남성</Button>
+          <Button onClick={()=>setgender(false)} style={{background:`${woman}`,color:"#d3d3d3",width:"7rem"}}>여성</Button>
+
         </ButtonGroup>
       </Section>
 
       <Section>
         <Column>
-          연령대
+          <p>연령대</p>
         </Column>
-        <Slider style={{width:"4rem",margin:"auto"}}
+        <Slider style={{width:"10rem",margin:"auto",color:"#e7713f"}}
           value={value}
           min={0}
           step={10}
@@ -173,13 +213,13 @@ function App() {
           onChange={handleChange}
           valueLabelDisplay="auto"
           aria-labelledby="non-linear-slider"
-          style={{color:"#e7713f",width:"10rem"}}
         />
       </Section>
-        <ClickButton onClick={() => {open()}}>샘플 가져가기</ClickButton>
-        <Popup isOpen={isOpen} close={close} />
+        
         
       </Under>
+      <ClickButton onClick={() => {open()}}>샘플 가져가기</ClickButton>
+        <Popup isOpen={isOpen} close={close} code={Code} sample={Sample} gender={isMale} age={age}/>
     </Body>
   );
 }
