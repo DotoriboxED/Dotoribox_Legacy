@@ -2,7 +2,7 @@ import React ,{useState,useEffect} from 'react';
 import Logo from '../Logo.js';
 import Sample from '../components/Samplecard'
 import styled from 'styled-components';
-import { useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {SampleApi} from "../api"
 import {useLocation} from 'react-router';
 import Background from '../image/background3.png';
@@ -37,7 +37,7 @@ const List = styled.div`
 
 function App() {
   const [Products,setProducts]=useState([]);
-  const [Images,setImages]=useState();
+  const [Images,setImages]=useState([]);
   const [Select,setSelect]=useState();
   const history = useHistory();
   const location = useLocation();
@@ -46,33 +46,30 @@ function App() {
 
   useEffect(()=>{
     getProduct()
-  },[])
+  },[]);
 
-  async function getProduct(){
-    
-    await SampleApi.getList().then(async (res) => {
+  useEffect(() => {
+    let images = []
+    Products.map((product, index) => {
+      SampleApi.getInfoImage(product.id).then((res) => {
+        images.push(res.data)
+      });
+    });
+
+    setImages(images);
+  }, [Products]);
+
+  function getProduct(){
+    SampleApi.getList().then((res) => {
       console.log(res.data);
       setProducts(res.data);
-      
     });
     
-  }
-  async function getImage(id){
-    
-    await SampleApi.getInfoImage(id).then(async (res) => {
-     
-      setImages(res.data);
-    });
-    
-  }
-  function changeSelect(id){
-    setSelect(id);
   }
 
   const renderLists=(Products.map((product,index)=>{
   
-    getImage(product.id)
-    return <Sample image={Images}
+    return <Sample image={Images[index]}
                    name={product.sampleName}
                    price={product.price}
                    info={product.explain}

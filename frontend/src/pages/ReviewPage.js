@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from 'styled-components';
 import Stars from '../components/Star';
 import { ReviewApi } from '../api';
@@ -104,6 +104,9 @@ function Reviewpage() {
   const [Review, setReview] = useState("");
   const [Rating, setRating] = useState(5);
   const history = useHistory();
+  const location = useLocation();
+
+  const userCode = location.state.userCode;
 
   const onStarClick = (nextValue, prevValue) => {
     setRating(nextValue)
@@ -139,7 +142,7 @@ function Reviewpage() {
           ></Input>
         </InputBox>
         <br></br>
-        <Button onClick={() => { history.push("/"); ReviewApi.postReview({ review: Review, score: Rating }); }}>Enter</Button>
+        <Button onClick={() => { history.push("/"); ReviewApi.postReview({ review: Review, score: Rating }, userCode.id); }}>Enter</Button>
       </Upper>
       <Under >
       </Under>

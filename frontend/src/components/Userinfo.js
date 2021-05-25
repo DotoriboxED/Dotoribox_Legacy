@@ -79,8 +79,7 @@ const Title=styled.p`
   padding-bottom: 4rem;
 `
 const Image=styled.img`
-  width: 5.125rem;
-  height: 5.313rem;
+  width: 60%;
   margin-bottom: 2rem;
 `
 const Price= styled.div`
@@ -139,6 +138,10 @@ const Warning=styled.div`
     margin-bottom: 2rem;
 `
 
+const Border = styled.div`
+    height: 4rem
+`
+
 function App() {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState(false);
@@ -148,6 +151,7 @@ function App() {
   const [body,setBody]=useState();
   const [man,setMan]=useState("white");
   const [woman,setWoman]=useState("white");
+  const [image, setImage] = useState();
   const location = useLocation();
   const Code = location.state.Code;
   const Sample=location.state.Sample;
@@ -155,7 +159,7 @@ function App() {
   const open = () => { setIsOpen(true); }
   const close = () => { setIsOpen(false); }
 
-  async function getProduct(sample){
+  function getProduct(sample){
       SampleApi.getInfo(sample).then((res) => {
         console.log(res.data);
         setproduct(res.data);
@@ -163,18 +167,16 @@ function App() {
         console.log(err);
       });
   }
-  async function getImage(sample){
+  // function getImage(sample){
+  //   console.log(sample);
+  //   SampleApi.getInfoImage(sample).then(async (res) => {
+  //     setImage(res.data);
+  //   });
     
-    await SampleApi.getInfoImage(sample).then(async (res) => {
-      
-
-    });
-    
-  }
+  // }
 
   useEffect(()=>{
     getProduct(Sample)
-    getImage(Sample)
   },[])
 
   useEffect(() => {
@@ -211,7 +213,7 @@ function App() {
         {
           product && <div>
             <Title><b>{product.sampleName}</b></Title>
-            <Image src={logo}></Image>
+            <Image src={'http://localhost:5000/api/sample/' + Sample + '/image'}/>
             <Tag>{product.explain}</Tag>
             <Price><b>{product.price}원</b></Price>
           </div>
@@ -248,6 +250,7 @@ function App() {
           aria-labelledby="non-linear-slider"
         />
       </Section>
+      <Border></Border>
         
         
       </Under>

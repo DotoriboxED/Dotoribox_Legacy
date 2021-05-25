@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useHistory} from "react-router-dom";
 import styled from 'styled-components';
 import {SampleApi} from "../api"
@@ -77,13 +77,15 @@ const Title=styled.div`
 
 function App(props) {
     const history = useHistory();
+    const location = useLocation();
 
     function saveinfo(code,sample,gender,age){
-        console.log(props);
-        SampleApi.postInfo({ taxiNumber: code, sampleCode: sample,isMale: gender, age: age}).catch((error) => {
+        SampleApi.postInfo({ taxiNumber: code, sampleCode: sample,isMale: gender, age: age}).then((res) => {
+            console.log(res.data);
+            history.push({pathname: "/review", state: { userCode: res.data }});
+        }).catch((error) => {
             console.log(error);
         });
-        history.push("/review");
     }
     
     return (

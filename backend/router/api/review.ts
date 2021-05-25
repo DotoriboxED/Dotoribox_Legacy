@@ -56,7 +56,7 @@ router.post('/:customerId/evaluate', async (req: Request, res: Response) => {
     if (review) data.review = review;
 
     try {
-        const isExist = await db.Customer.updateOne({
+        const isExist = await db.Customer.findOne({
             id: customerId
         });
 
