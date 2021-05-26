@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import {useHistory} from "react-router-dom";
 import {SampleApi} from "../api"
 import {useLocation} from 'react-router';
+import WarningPopup from '../components/InvalidFormPopup';
 import Background from '../image/background3.png';
 
 const Button=styled.button`
@@ -39,10 +40,18 @@ function App() {
   const [Products,setProducts]=useState([]);
   const [Images,setImages]=useState([]);
   const [Select,setSelect]=useState();
+  const [isValid, setIsValid]=useState(true);
   const history = useHistory();
   const location = useLocation();
 
   const Code = location.state.Code;
+
+  const checkValid = () => {
+    if (Select === undefined)
+      setIsValid(false);
+    else
+      history.push({ pathname:'./userinfo', state:{ Code:Code, Sample:Select }});
+  }
 
   useEffect(()=>{
     getProduct()
@@ -86,12 +95,8 @@ function App() {
       {renderLists}
       </List>
       
-      <Button onClick={() => {history.push({
-          pathname:'./userinfo',
-          state:{Code:Code,
-                 Sample:Select}
-        })}}><b>카트로 이동하기</b></Button>
-       
+      <Button onClick={() => {checkValid()}}><b>카트로 이동하기</b></Button>
+      <WarningPopup isValid={isValid} setValid={setIsValid} message={<div>상품을 하나<br/>골라 주세요.</div>}/>
     </Main>
   );
 }

@@ -1,5 +1,6 @@
 import React ,{useState,useEffect} from 'react';
 import styled from 'styled-components';
+import {API_URL} from '../api';
 
 const Each= styled.div`
   text-align: center;
@@ -67,12 +68,17 @@ const Info=styled.div`
   height: 2.5rem;
 `
 const Image = styled.img`
+  height: 11.3rem;
+  overflow: hidden;
+`;
+
+const ImageForm = styled.div`
   width: 100%;
-  height: 11.2rem;
+  height: 11.3rem;
   justify-content: center;
   margin:auto;
   overflow: hidden;
-`;
+`
 const Card = (props) =>{
   const { setSelect, select, id } = props;
 
@@ -95,7 +101,9 @@ const Card = (props) =>{
   }
     return(
     <Each style={{ borderColor: background}}>
-     <Image src={'http://localhost:5000/api/sample/' + props.id + '/image'}></Image>
+     <ImageForm>
+       <Image src={API_URL + '/api/sample/' + props.id + '/image'}></Image>
+     </ImageForm>
      <Name>{props.name}</Name>
      <Price>{props.price}원</Price>
      <Bottom>

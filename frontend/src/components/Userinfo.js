@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useHistory} from "react-router-dom";
 import Popup from './SubmitPopup';
+import WarningPopup from './InvalidFormPopup';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
 import {useLocation} from 'react-router';
-import {SampleApi} from "../api"
+import {SampleApi, API_URL} from "../api"
 
 const Black = styled.div`
   background-color: black;
@@ -152,12 +153,21 @@ function App() {
   const [man,setMan]=useState("white");
   const [woman,setWoman]=useState("white");
   const [image, setImage] = useState();
+  const [isValid, setIsValid] = useState(true);
   const location = useLocation();
   const Code = location.state.Code;
   const Sample=location.state.Sample;
 
   const open = () => { setIsOpen(true); }
   const close = () => { setIsOpen(false); }
+  const setFormValid = () => { setIsValid(true); }
+
+  const checkIsValid = () => {
+    if (isMale === undefined || age === undefined)
+      setIsValid(false);
+    else
+      setIsOpen(true);
+  }
 
   function getProduct(sample){
       SampleApi.getInfo(sample).then((res) => {
@@ -213,7 +223,7 @@ function App() {
         {
           product && <div>
             <Title><b>{product.sampleName}</b></Title>
-            <Image src={'http://localhost:5000/api/sample/' + Sample + '/image'}/>
+            <Image src={ API_URL + '/api/sample/' + Sample + '/image'}/>
             <Tag>{product.explain}</Tag>
             <Price><b>{product.price}원</b></Price>
           </div>
@@ -247,17 +257,17 @@ function App() {
           valueLabelFormat={valueLabelFormat}
           onChange={handleChange}
           valueLabelDisplay="auto"
-          aria-labelledby="non-linear-slider"
+          aria-labelledby="nonisOpen-linear-slider"
         />
       </Section>
       <Border></Border>
         
         
       </Under>
-      <ClickButton onClick={() => {open()}}>샘플 가져가기</ClickButton>
+      <ClickButton onClick={() => {checkIsValid()}}>샘플 가져가기</ClickButton>
         <Popup isOpen={isOpen} close={close} code={Code} sample={Sample} gender={isMale} age={age}/>
+        <WarningPopup isValid={isValid} setValid={setFormValid} message={<div>지정된 양식을<br/>모두 채워 주세요.</div>}/>
     </Body>
   );
 }
-
 export default App;
