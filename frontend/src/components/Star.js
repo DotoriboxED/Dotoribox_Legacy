@@ -18,9 +18,9 @@ const App = (props) => {
         <div   
             onClick={() => onSaveRating(index)}
         >
-            <StarBox>
+            <div>
                 <StarIcon isStar={fillColor} />
-            </StarBox>
+            </div>
         </div>
     )
 }

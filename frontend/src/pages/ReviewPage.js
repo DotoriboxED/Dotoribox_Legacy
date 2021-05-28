@@ -4,8 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import styled from 'styled-components';
 import Stars from '../components/Star';
 import { ReviewApi } from '../api';
-import { ReactComponent as Star } from '../image/star.svg';
-import Logo from '../Logo'
+import Logo from '../Logo';
 
 const Upper = styled.div`
   width:90%;
@@ -107,10 +106,6 @@ function Reviewpage() {
   const location = useLocation();
 
   const userCode = location.state.userCode;
-
-  const onStarClick = (nextValue, prevValue) => {
-    setRating(nextValue)
-  }
 
   return (
     <Header>

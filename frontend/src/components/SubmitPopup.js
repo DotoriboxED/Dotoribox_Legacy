@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from 'styled-components';
 import {SampleApi} from "../api"
 
@@ -81,8 +81,8 @@ function App(props) {
 
     function saveinfo(code,sample,gender,age){
         SampleApi.postInfo({ taxiNumber: code, sampleCode: sample,isMale: gender, age: age}).then((res) => {
-            console.log(res.data);
-            history.push({pathname: "/review", state: { userCode: res.data }});
+            const { id } = res.data;
+            history.push({pathname: "/review", state: { userCode: id }});
         }).catch((error) => {
             console.log(error);
         });
