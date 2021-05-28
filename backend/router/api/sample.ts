@@ -227,7 +227,7 @@ router.delete('/:sampleId', async (req: Request, res: Response) => {
                 id: sampleId
             });
         } else {
-            if (isExist.isDeleted === false)
+            if (isExist.isDeleted === true)
                 return sendErrorResponse(res, 404, 'sample_not_exists');
             
             await db.Sample.updateOne({
