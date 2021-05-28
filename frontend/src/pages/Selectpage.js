@@ -29,7 +29,7 @@ const Button=styled.button`
 const Main=styled.div`
   text-align: center;
   background-image: url(${Background});
-  height:52rem;
+  height:100vh;
 `
 
 const List = styled.div`

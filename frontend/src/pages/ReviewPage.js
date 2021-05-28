@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Stars from '../components/Star';
 import { ReviewApi } from '../api';
 import Logo from '../Logo';
+import Background from '../image/background1.png'
 
 const Upper = styled.div`
   width:90%;
@@ -22,9 +23,8 @@ const Under = styled.div`
   background-position: center;
   `
 const Header = styled.div`
-  background-color:black;
-  width:100%;
-  height:45rem;
+  background-image: url(${Background});
+  height: 100vh;
   text-align : center;
 `
 const Title1 = styled.p`
