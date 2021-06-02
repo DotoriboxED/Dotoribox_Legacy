@@ -46,12 +46,12 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/:taxiId', async (req: Request, res: Response) => {
-    const { taxiId } = req.params;
+router.get('/:taxiNumber', async (req: Request, res: Response) => {
+    const { taxiNumber } = req.params;
 
     try {
         const result: any = await db.Taxi.findOne({
-            id: taxiId,
+            taxiNumber,
             isDeleted: false
         });
 
@@ -64,12 +64,12 @@ router.get('/:taxiId', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/:taxiId/recover', async (req: Request, res: Response) => {
-    const { taxiId } = req.params;
+router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
+    const { taxiNumber } = req.params;
 
     try {
         const result: any = await db.Taxi.findOne({
-            id: taxiId,
+            taxiNumber,
             isDeleted: true
         });
 
@@ -77,7 +77,7 @@ router.put('/:taxiId/recover', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         await db.Taxi.updateOne({
-            id: taxiId,
+            taxiNumber,
             isDeleted: true
         }, {
             isDeleted: false
@@ -89,12 +89,12 @@ router.put('/:taxiId/recover', async (req: Request, res: Response) => {
     }
 })
 
-router.delete('/:taxiId', async (req: Request, res: Response) => {
-    const { taxiId } = req.params;
+router.delete('/:taxiNumber', async (req: Request, res: Response) => {
+    const { taxiNumber } = req.params;
 
     try {
         const result: any = await db.Taxi.findOne({
-            id: taxiId,
+            taxiNumber,
             isDeleted: false
         });
 
@@ -102,7 +102,7 @@ router.delete('/:taxiId', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         await db.Taxi.updateOne({
-            id: taxiId,
+            taxiNumber,
             isDeleted: false
         }, {
             isDeleted: true
