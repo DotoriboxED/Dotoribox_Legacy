@@ -56,7 +56,7 @@ const Title2=styled.p`
   margin:auto;
   margin-left:2rem;
   padding-top:0.5rem;
-  margin: 0em 1em 2em 1em;
+  margin: 0em 1em 0em 1em;
   
 `
 
@@ -88,7 +88,7 @@ const Tag=styled.p`
   color: #a3a0a0;
   margin:auto;
   margin-left:1rem;
-  padding-top:0.5rem;
+  padding-top:2rem;
   padding-bottom:0.5rem;
 `
 const Input=styled.input`
@@ -144,8 +144,6 @@ function Inputcode() {
         <Space />
         <Hr></Hr>
         <Title2>샘플 선택을 위한 웹페이지입니다<br/>제공되는 샘플은 안전하게 한번 더 포장되어 있습니다</Title2>
-        <Hr></Hr>
-        <br/>
         <Tag>QR코드 위 5자리 숫자를 입력해주세요.</Tag>
         <Input 
           placeholder="CODE" 
@@ -153,7 +151,6 @@ function Inputcode() {
           value={Code}
           onChange={({ target: {value}} )=>setCode(value)}
           ></Input>
-        <br></br>
         <Button onClick={() => {
           SampleApi.getTaxiNum(parseInt(Code, 10)).then((res) => {
             history.push({ pathname:'./selectsample', state:{Code:Code}})
