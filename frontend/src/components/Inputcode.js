@@ -56,9 +56,26 @@ const Title2=styled.p`
   margin:auto;
   margin-left:2rem;
   padding-top:0.5rem;
-  margin: 1em 1em 0 1em;
+  margin: 0em 1em 2em 1em;
   
 `
+
+const Title3=styled.p`
+  font-family: SpoqaHanSansNeo;
+  font-size: 0.7rem;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.46;
+  letter-spacing: -0.07px;
+  text-align: left;
+  color: #ffffff;
+  margin:auto;
+  padding-top:0.5rem;
+  margin: 0em 1em 2em 1.45em;
+  
+`
+
 const Tag=styled.p`
   font-family: SpoqaHanSansNeo;
   font-size: 0.7rem;
@@ -105,8 +122,8 @@ const Button=styled.button`
 
 const Hr=styled.hr`
   width: 90%;
-  color: #DC6E3F;
-  margin: 1em 1em 0 1em;
+  border-color: #a3a0a0;
+  margin: 1em 1em 1em 1em;
   
 `
 
@@ -123,11 +140,13 @@ function Inputcode() {
     <Header>
       <Upper>
         <Title1>dotoribox</Title1>
+        <Title3>도토리박스와 함께 새로운 택시를 경험하세요</Title3>
         <Space />
-        <Title2>도토리박스와 함께 새로운 택시를 경험하세요</Title2>
+        <Hr></Hr>
+        <Title2>샘플 선택을 위한 웹페이지입니다<br/>제공되는 샘플은 안전하게 한번 더 포장되어 있습니다</Title2>
         <Hr></Hr>
         <br/>
-        <Tag>박스 위 4자리 숫자를 입력해주세요</Tag>
+        <Tag>QR코드 위 5자리 숫자를 입력해주세요.</Tag>
         <Input 
           placeholder="CODE" 
           placeholderTextColor="#a3a0a0"
