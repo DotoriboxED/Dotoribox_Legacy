@@ -23,6 +23,7 @@ export const ReviewApi = {
 
 export const TaxiApi = {
   getTaxi: () => api.get(API_URL + "/api/taxi"),
+  getTaxiInfo: (id) => api.get(API_URL, "/api/taxi/" + id)
 }
 
 

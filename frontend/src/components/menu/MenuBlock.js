@@ -18,12 +18,14 @@ const App = ({title, explain, path}) => {
     const history = useHistory();
 
     return (
-        <Item onClick={() => { history.push(path); }}>
-            <Title><b>{title}</b></Title>
-            {
-                explain && <Explain>{explain}</Explain>
-            }
-        </Item>
+        <div>
+            <Item onClick={() => { history.push(path); }}>
+                <Title><b>{title}</b></Title>
+                {
+                    explain && <Explain>{explain}</Explain>
+                }
+            </Item>
+        </div>
     )
 }
 

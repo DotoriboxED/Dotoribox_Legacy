@@ -8,6 +8,7 @@ import Loginpage from './pages/admin/loginPage';
 import Managepage from './pages/admin/manageMenuPage';
 import SampleManagementpage from './pages/admin/sample/adminSamplePage';
 import SampleEditpage from './pages/admin/sample/sampleEditPage';
+import TaxiManagementpage from './pages/admin/taxi/taxiListPage';
 
 function App({location}) {
   return (
@@ -20,6 +21,7 @@ function App({location}) {
         <Route path='/coffee/menu' component={Managepage} exact={true}/>
         <Route path='/coffee/menu/sample' component={SampleManagementpage} exact={true}/>
         <Route path='/coffee/menu/sample/:sampleId' component={SampleEditpage} />
+        <Route path='/coffee/menu/taxi' component={TaxiManagementpage} exact={true} />
       </Switch>
   );
 }
