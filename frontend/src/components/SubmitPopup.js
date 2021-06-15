@@ -38,7 +38,7 @@ const Popup = styled.div`
     margin: 30px auto;
     padding: 20px;
     background: #fff; 
-    border: 1px solid #e7713f
+    border: 1px solid #e7713f;
 `
 
 const Tag=styled.p`

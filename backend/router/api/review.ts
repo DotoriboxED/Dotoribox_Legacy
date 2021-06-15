@@ -29,17 +29,20 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-    const { taxiNumber, sampleCode, isMale, age, score, review } = req.body;
-    const data: Record<string, unknown> = {taxiNumber, sampleCode, isMale, age};
+    const { taxiNumber, sampleCode, isMale, age } = req.body;
 
     if (!taxiNumber || !sampleCode || isMale === undefined || !age)
-        return sendErrorResponse(res, 400, 'invalid_form');
-
-    if (score) data.score = score;
-    if (review) data.review = review;
+        return sendErrorResponse(res, 400, 'invalid_form')
 
     try {
-        const item = await db.Customer.create(data);
+        const item = await db.Customer.create({
+            taxiNumber,
+            sampleCode,
+            isMale,
+            age
+        });
+
+        console.log(item);
 
         res.json({ id: item.id });
     } catch (err) {

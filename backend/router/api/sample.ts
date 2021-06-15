@@ -128,9 +128,10 @@ router.put('/:sampleId', async (req: Request, res: Response) => {
 
     try {
         const isExist = await db.Sample.findOne({
-            sampleId,
+            id: sampleId,
             isDeleted: false
         });
+        console.log(isExist);
 
         if (!isExist)
             return sendErrorResponse(res, 403, 'sample_not_exists');

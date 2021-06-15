@@ -70,7 +70,6 @@ function App() {
 
   function getProduct(){
     SampleApi.getList().then((res) => {
-      console.log(res.data);
       setProducts(res.data);
     });
     

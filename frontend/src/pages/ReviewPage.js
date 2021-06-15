@@ -99,7 +99,7 @@ const Hr = styled.hr`
   
 `
 
-function Reviewpage() {
+function Reviewpage(props) {
   const [Review, setReview] = useState("");
   const [Rating, setRating] = useState(5);
   const history = useHistory();
@@ -137,7 +137,7 @@ function Reviewpage() {
           ></Input>
         </InputBox>
         <br></br>
-        <Button onClick={() => { history.push("/"); ReviewApi.postReview({ review: Review, score: Rating }, userCode.id); }}>Enter</Button>
+        <Button onClick={() => { history.push('/'); ReviewApi.postReview({ review: Review, score: Rating }, userCode); }}>Enter</Button>
       </Upper>
       <Under >
       </Under>
