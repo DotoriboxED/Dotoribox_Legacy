@@ -6,6 +6,7 @@ import isWsl from 'is-wsl';
 import dns from 'dns';
 
 import Customers from './schema/customer';
+import Drivers from './schema/driver';
 
 dotenv.config({ path: path.join(process.cwd(), '.env') });
 
@@ -32,6 +33,6 @@ if (isWsl) {
 mongoose.set('useCreateIndex', true);
 autoIncrement.initialize(mongoose.connection);
 
-const db = {...Customers(autoIncrement)} // Input Database Object Here
+const db = {...Customers(autoIncrement), ...Drivers(autoIncrement)} // Input Database Object Here
 
 export default db;

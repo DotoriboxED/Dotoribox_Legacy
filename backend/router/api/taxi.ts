@@ -5,7 +5,13 @@ import sendErrorResponse from '../tool/error';
 const router = Router();
 
 router.post('/', async (req: Request, res: Response) => {
-    const { taxiNumber } = req.body;
+    const { 
+        taxiNumber, 
+        driverName, 
+        phoneNumber, 
+        accountNumber, 
+        licensePlate, 
+        group } = req.body;
 
     try {
         const check = await db.Taxi.findOne({
@@ -16,7 +22,14 @@ router.post('/', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 403, 'taxi_already_exists');
 
         await db.Taxi.create({
-            taxiNumber
+            taxiNumber,
+            driver: {
+                name: driverName,
+                phoneNumber,
+                accountNumber,
+                licensePlate,
+                group
+            }
         });
 
         res.sendStatus(201);
@@ -63,6 +76,10 @@ router.get('/:taxiNumber', async (req: Request, res: Response) => {
         sendErrorResponse(res, 500, 'unknown_error', err);
     }
 });
+
+router.put('/:taxiNumber', async (req: Request, res: Response) => {
+    
+})
 
 router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
     const { taxiNumber } = req.params;
