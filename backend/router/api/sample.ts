@@ -39,7 +39,19 @@ router.post('/',
     },
     upload.single('attachment'),
     async (req: Request, res: Response) => {
-        const { sampleName, price, explain } = req.body;
+        const { sampleName, 
+            price, 
+            explain,
+            name,
+            sampleType,
+            manufacture,
+            sale,
+            consulting,
+            question 
+        } = req.body;
+    
+        if (!sampleName && !price && !explain)
+            return sendErrorResponse(res, 400, 'invalid_form');
 
         try {
             const ext = path.extname(req.file.originalname);
@@ -49,7 +61,15 @@ router.post('/',
                 sampleName,
                 image: fileName,
                 price,
-                explain
+                explain,
+                info: {
+                    sampleName: name,
+                    sampleType,
+                    sale,
+                    consulting,
+                    question,
+                    manufacture
+                }
             });
 
             res.sendStatus(201);
@@ -116,29 +136,44 @@ router.get('/:sampleId', async (req: Request, res: Response) => {
 
 router.put('/:sampleId', async (req: Request, res: Response) => {
     const { sampleId } = req.params;
-    const { sampleName, price, explain } = req.body;
+    const { sampleName, 
+        price, 
+        explain,
+        name,
+        sampleType,
+        manufacture,
+        sale,
+        consulting,
+        question 
+    } = req.body;
     const data: Record<string, unknown> = {}
+    const subData: Record<string, unknown> = {}
 
-    if (!sampleName && !price && !explain)
-        return sendErrorResponse(res, 400, 'invalid_form');
+    // if (!sampleName && !price && !explain)
+    //     return sendErrorResponse(res, 400, 'invalid_form');
 
     if (sampleName) data.sampleName = sampleName;
     if (price) data.price = price;
     if (explain) data.explain = explain;
 
+    if (name) subData.sampleName = name;
+    if (sampleType) subData.sampleType = sampleType;
+    if (manufacture) subData.sale = sale;
+    if (consulting) subData.consulting = consulting;
+    if (question) subData.question = question;
+    if (sale) subData.sale = sale;
+
+    if (Object.keys(subData).length > 0)
+        data.info = subData;
+
     try {
-        const isExist = await db.Sample.findOne({
+        const result = await db.Sample.findOneAndUpdate({
             id: sampleId,
             isDeleted: false
-        });
-        console.log(isExist);
+        }, data, { returnOriginal: false });
 
-        if (!isExist)
+        if (!result)
             return sendErrorResponse(res, 403, 'sample_not_exists');
-
-        await db.Sample.updateOne({
-            id: sampleId
-        }, data);
 
         res.sendStatus(200);
     } catch (err) {

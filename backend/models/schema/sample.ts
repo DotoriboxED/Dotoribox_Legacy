@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 
-
-
 export default function (autoIncrement: any) {
     const sampleSchema = new mongoose.Schema({
         id: {
