@@ -1,7 +1,28 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export default function (autoIncrement: any) {
-    const taxiSchema = new mongoose.Schema({
+    interface ITaxi {
+        taxiNumber: number,
+        passenger: number,
+        isDeleted: boolean,
+        driver: {
+            name: string,
+            phoneNumber: string,
+            accountNumber: string,
+            licensePlate: string,
+            group: string
+        },
+        samples: object
+    };
+
+    interface ITaxiDocument extends ITaxi, Document {
+    }
+
+    interface ITaxiModel extends mongoose.Model<ITaxiDocument> {
+        updateByTaxiNumber: (taxiNumber: number, update: any) => Promise<boolean>
+    }
+
+    const taxiSchema = new mongoose.Schema<ITaxiDocument>({
         id: {
             type: Number
         },
@@ -70,9 +91,25 @@ export default function (autoIncrement: any) {
         field: 'id',
         startAt: 1,
         increment: 1
-    })
+    });
 
-    const Taxi = mongoose.model('Taxi', taxiSchema);
+    taxiSchema.statics.updateByTaxiNumber = async function (taxiNumber, update) {
+        const check = await this.findOne({
+            taxiNumber,
+            isDeleted: false
+        });
+
+        if (!check) return false;
+
+        await this.updateOne({
+            taxiNumber,
+            isDeleted: false
+        }, update);
+
+        return true;
+    }
+
+    const Taxi = mongoose.model<ITaxiDocument, ITaxiModel>('Taxi', taxiSchema);
     const Stock = mongoose.model('Stock', stockSchema);
 
     return {

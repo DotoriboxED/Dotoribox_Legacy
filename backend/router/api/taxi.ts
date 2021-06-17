@@ -64,7 +64,7 @@ router.get('/:taxiNumber', async (req: Request, res: Response) => {
 
     try {
         const result: any = await db.Taxi.findOne({
-            taxiNumber,
+            taxiNumber: +taxiNumber,
             isDeleted: false
         });
 
@@ -78,15 +78,32 @@ router.get('/:taxiNumber', async (req: Request, res: Response) => {
 });
 
 router.put('/:taxiNumber', async (req: Request, res: Response) => {
+    const { taxiNumber } = req.params;
+    const keys = ['driverName', 'phoneNumber', 'taxiNumber', 'accountNumber', 'licensePlate', 'group'];
+    const update: Record<string, unknown> = {}
+
+    Object.keys(req.body).forEach(key => key in keys ? update[key] = req.body[key] : null);
+
+    await db.Taxi.updateOne({
+        taxiNumber: +taxiNumber,
+        isDeleted: false
+    }, update);
+
+    const result = await db.Taxi.updateByTaxiNumber(+taxiNumber, update);
+
+    if (!result)
+        return sendErrorResponse(res, 404, 'taxi_not_exists');
     
-})
+    res.sendStatus(200);
+
+});
 
 router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
     const { taxiNumber } = req.params;
 
     try {
         const result: any = await db.Taxi.findOne({
-            taxiNumber,
+            taxiNumber: +taxiNumber,
             isDeleted: true
         });
 
@@ -94,7 +111,7 @@ router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         await db.Taxi.updateOne({
-            taxiNumber,
+            taxiNumber: +taxiNumber,
             isDeleted: true
         }, {
             isDeleted: false
@@ -111,7 +128,7 @@ router.delete('/:taxiNumber', async (req: Request, res: Response) => {
 
     try {
         const result: any = await db.Taxi.findOne({
-            taxiNumber,
+            taxiNumber: +taxiNumber,
             isDeleted: false
         });
 
@@ -119,7 +136,7 @@ router.delete('/:taxiNumber', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         await db.Taxi.updateOne({
-            taxiNumber,
+            taxiNumber: +taxiNumber,
             isDeleted: false
         }, {
             isDeleted: true
