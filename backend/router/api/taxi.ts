@@ -77,19 +77,25 @@ router.get('/:taxiNumber', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/:taxiNumber', async (req: Request, res: Response) => {
-    const { taxiNumber } = req.params;
-    const keys = ['driverName', 'phoneNumber', 'taxiNumber', 'accountNumber', 'licensePlate', 'group'];
-    const update: Record<string, unknown> = {}
+router.put('/:taxiId', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
+    const { driverName, phoneNumber, taxiNumber, accountNumber, licensePlate, group } = req.body;
+    const update: any = {};
+    const driver: Record<string, unknown> = {};
 
-    Object.keys(req.body).forEach(key => key in keys ? update[key] = req.body[key] : null);
+    if (driverName) driver['driver.driverName'] = driverName;
+    if (phoneNumber) driver['driver.phoneNumber'] = phoneNumber;
+    if (taxiNumber) update.taxiNumber = taxiNumber;
+    if (accountNumber) driver['driver.accountNumber'] = accountNumber;
+    if (licensePlate) driver['driver.licensePlate'] = licensePlate;
+    if (group) driver['driver.group'] = group;
 
-    await db.Taxi.updateOne({
-        taxiNumber: +taxiNumber,
-        isDeleted: false
-    }, update);
+    if (Object.keys(driver).length != 0) update["$set"] = driver;
 
-    const result = await db.Taxi.updateByTaxiNumber(+taxiNumber, update);
+    const result = await db.Taxi.updateByTaxiNumber(+taxiId, update);
+
+    if (typeof(result) !== 'boolean')
+        return sendErrorResponse(res, 500, 'unknown_error', result);
 
     if (!result)
         return sendErrorResponse(res, 404, 'taxi_not_exists');
