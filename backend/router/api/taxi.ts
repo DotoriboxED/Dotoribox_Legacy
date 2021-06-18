@@ -83,7 +83,7 @@ router.put('/:taxiId', async (req: Request, res: Response) => {
     const update: any = {};
     const driver: Record<string, unknown> = {};
 
-    if (driverName) driver['driver.driverName'] = driverName;
+    if (driverName) driver['driver.name'] = driverName;
     if (phoneNumber) driver['driver.phoneNumber'] = phoneNumber;
     if (taxiNumber) update.taxiNumber = taxiNumber;
     if (accountNumber) driver['driver.accountNumber'] = accountNumber;

@@ -94,19 +94,23 @@ export default function (autoIncrement: any) {
     });
 
     taxiSchema.statics.updateByTaxiNumber = async function (taxiNumber, update) {
-        const check = await this.findOne({
-            taxiNumber,
-            isDeleted: false
-        });
-
-        if (!check) return false;
-
-        await this.updateOne({
-            taxiNumber,
-            isDeleted: false
-        }, update);
-
-        return true;
+        try {
+            const check = await this.findOne({
+                taxiNumber,
+                isDeleted: false
+            });
+    
+            if (!check) return false;
+    
+            await this.updateOne({
+                taxiNumber,
+                isDeleted: false
+            }, update);
+    
+            return true;
+        } catch (err) {
+            return err;
+        }
     }
 
     const Taxi = mongoose.model<ITaxiDocument, ITaxiModel>('Taxi', taxiSchema);
