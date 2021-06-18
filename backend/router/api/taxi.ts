@@ -129,12 +129,12 @@ router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
     }
 })
 
-router.delete('/:taxiNumber', async (req: Request, res: Response) => {
-    const { taxiNumber } = req.params;
+router.delete('/:taxiId', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
 
     try {
         const result: any = await db.Taxi.findOne({
-            taxiNumber: +taxiNumber,
+            id: taxiId,
             isDeleted: false
         });
 
@@ -142,7 +142,7 @@ router.delete('/:taxiNumber', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         await db.Taxi.updateOne({
-            taxiNumber: +taxiNumber,
+            id: taxiId,
             isDeleted: false
         }, {
             isDeleted: true

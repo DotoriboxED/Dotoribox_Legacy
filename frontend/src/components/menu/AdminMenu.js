@@ -26,8 +26,8 @@ const App = () => {
         <ItemMenu>
             <Setting><b>설정</b></Setting>
             <hr/>
-            <Item title='샘플 관리' explain='샘플을 생성/수정/삭제합니다.' path='/coffee/menu/sample'/>
-            <Item title='택시 관리' explain='택시를 생성/수정/삭제합니다.' path='/coffee/menu/taxi' />
+            <Item title='샘플 관리' explain='샘플을 생성/수정/삭제합니다.' path='/coffee/menu/sample' isUpper={false}/>
+            <Item title='택시 관리' explain='택시를 생성/수정/삭제합니다.' path='/coffee/menu/taxi' isUpper={false} />
         </ItemMenu>
     )
 }

@@ -140,7 +140,7 @@ const Warning=styled.div`
 `
 
 const Border = styled.div`
-    height: 4rem
+    height: 4rem;
 `
 
 function App() {

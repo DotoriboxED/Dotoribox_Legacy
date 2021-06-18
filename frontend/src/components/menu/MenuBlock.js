@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
 const Title = styled.div`
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 `
 
 const Explain = styled.div`
@@ -14,15 +14,18 @@ const Item = styled.div`
     margin: 10px;
 `
 
-const App = ({title, explain, path}) => {
+const App = ({title, explain, path, isUpper}) => {
     const history = useHistory();
 
     return (
         <div>
             <Item onClick={() => { history.push(path); }}>
+                {
+                    isUpper && explain && <Explain>{explain}</Explain>
+                }
                 <Title><b>{title}</b></Title>
                 {
-                    explain && <Explain>{explain}</Explain>
+                    !isUpper && explain && <Explain>{explain}</Explain>
                 }
             </Item>
         </div>

@@ -20,3 +20,11 @@
 2021-05-26 20:07 +09:00: Listening on Port 5000
 2021-05-26 20:07 +09:00: MongoDB Connected
 2021-05-26 20:07 +09:00: [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+2021-06-18 15:52 +09:00: [33m[nodemon] 2.0.7[39m
+2021-06-18 15:52 +09:00: [33m[nodemon] to restart at any time, enter `rs`[39m
+2021-06-18 15:52 +09:00: [33m[nodemon] watching path(s): *.*[39m
+2021-06-18 15:52 +09:00: [33m[nodemon] watching extensions: js,mjs,json[39m
+2021-06-18 15:52 +09:00: [32m[nodemon] starting `ts-node dist/bin/www.js`[39m
+2021-06-18 15:52 +09:00: Listening on Port 5000
+2021-06-18 15:52 +09:00: MongoDB Connected
+2021-06-18 15:52 +09:00: [31m[nodemon] app crashed - waiting for file changes before starting...[39m

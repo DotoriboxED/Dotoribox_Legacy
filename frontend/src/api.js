@@ -17,13 +17,18 @@ export const SampleApi = {
     putSample: (id, body) => api.put(API_URL + "/api/sample/" + id, body),
     putSampleImage: (id, formData, headers) => api.put(API_URL + "/api/sample/" + id + "/image", formData, headers)
 }
+
 export const ReviewApi = {
+  getReview: (query) => api.get(API_URL + "/api/review", null, { params: query }),
   postReview: (body, id) => api.post(API_URL + "/api/review/" + id + "/evaluate", body)//작성된 리뷰 디비에 저장
 }
 
 export const TaxiApi = {
   getTaxi: () => api.get(API_URL + "/api/taxi"),
-  getTaxiInfo: (id) => api.get(API_URL, "/api/taxi/" + id)
+  getTaxiInfo: (id) => api.get(API_URL + "/api/taxi/" + id),
+  postTaxi: (body) => api.post(API_URL + "/api/taxi/", body),
+  putTaxi: (id, body) => api.put(API_URL + "/api/taxi/" + id, body),
+  deleteTaxi: (id) => api.delete(API_URL + "/api/taxi/" + id)
 }
 
 
