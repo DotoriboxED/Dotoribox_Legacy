@@ -32,52 +32,76 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-router.post('/',
-    function (req: Request, file: object, next: Function) {
-        req.newFilename = uuid();
-        next();
-    },
-    upload.single('attachment'),
-    async (req: Request, res: Response) => {
-        const { sampleName, 
-            price, 
+router.post('/', async (req: Request, res: Response) => {
+    const { sampleName,
+        price,
+        explain,
+        name,
+        sampleType,
+        manufacture,
+        sale,
+        consulting,
+        question
+    } = req.body;
+
+    if (!sampleName && !price && !explain)
+        return sendErrorResponse(res, 400, 'invalid_form');
+
+    try {
+        const result = await db.Sample.create({
+            sampleName,
+            price,
             explain,
-            name,
-            sampleType,
-            manufacture,
-            sale,
-            consulting,
-            question 
-        } = req.body;
-    
-        if (!sampleName && !price && !explain)
-            return sendErrorResponse(res, 400, 'invalid_form');
+            info: {
+                name,
+                sampleType,
+                sale,
+                consulting,
+                question,
+                manufacture
+            }
+        });
 
-        try {
-            const ext = path.extname(req.file.originalname);
-            const fileName = req.newFilename + ext;
-
-            await db.Sample.create({
-                sampleName,
-                image: fileName,
-                price,
-                explain,
-                info: {
-                    sampleName: name,
-                    sampleType,
-                    sale,
-                    consulting,
-                    question,
-                    manufacture
-                }
-            });
-
-            res.sendStatus(201);
-        } catch (err) {
-            sendErrorResponse(res, 500, 'unknown_error', err);
-        }
+        res.json(result);
+    } catch (err) {
+        sendErrorResponse(res, 500, 'unknown_error', err);
     }
+}
 )
+
+router.post('/:taxiId/stock', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
+    const { sampleId, stock } = req.body;
+
+    try {
+        const taxiIsExist = await db.Taxi.findOne({
+            taxiNumber: +taxiId,
+            isDeleted: false
+        });
+
+        if (!taxiIsExist)
+            return sendErrorResponse(res, 404, 'taxi_not_exists');
+
+        const sampleIsExist = await db.Sample.findOne({
+            id: sampleId,
+            isDeleted: false
+        });
+
+        if (!sampleIsExist)
+            return sendErrorResponse(res, 404, 'sample_not_exists');
+
+        await db.Taxi.createStock(+taxiId, {
+            taxiId,
+            sampleId,
+            stock,
+            sample: sampleIsExist._id
+        });
+
+        res.sendStatus(201);
+    } catch (err) {
+        sendErrorResponse(res, 500, 'unknown_error', err);
+    }
+});
 
 router.get('/', async (req: Request, res: Response) => {
     const { isDeleted } = req.query;
@@ -96,7 +120,7 @@ router.get('/', async (req: Request, res: Response) => {
 
             res.json(result);
         }
-        
+
     } catch (err) {
         sendErrorResponse(res, 500, 'unknown_error', err);
     }
@@ -136,15 +160,15 @@ router.get('/:sampleId', async (req: Request, res: Response) => {
 
 router.put('/:sampleId', async (req: Request, res: Response) => {
     const { sampleId } = req.params;
-    const { sampleName, 
-        price, 
+    const { sampleName,
+        price,
         explain,
         name,
         sampleType,
         manufacture,
         sale,
         consulting,
-        question 
+        question
     } = req.body;
     const data: Record<string, unknown> = {}
     const subData: Record<string, unknown> = {}
@@ -202,7 +226,8 @@ router.put('/:sampleId/image',
             if (!isExist)
                 return sendErrorResponse(res, 404, 'sample_not_exists');
 
-            unlink('./uploads/' + isExist.image);
+            if (isExist.image !== undefined)
+                unlink('./uploads/' + isExist.image);
 
             await db.Sample.updateOne({
                 id: sampleId
@@ -228,7 +253,7 @@ router.put('/:sampleId/recover', async (req: Request, res: Response) => {
 
         if (!isExist)
             return sendErrorResponse(res, 404, 'sample_not_exists');
-        
+
         await db.Sample.updateOne({
             id: sampleId
         }, {
@@ -256,7 +281,7 @@ router.delete('/:sampleId', async (req: Request, res: Response) => {
         if (permanent) {
             if (isExist.isDeleted === false)
                 return sendErrorResponse(res, 403, 'permanent_needs_delete');
-            
+
             unlink('./uploads/' + isExist.image);
 
             await db.Sample.deleteOne({
@@ -265,7 +290,7 @@ router.delete('/:sampleId', async (req: Request, res: Response) => {
         } else {
             if (isExist.isDeleted === true)
                 return sendErrorResponse(res, 404, 'sample_not_exists');
-            
+
             await db.Sample.updateOne({
                 id: sampleId
             }, {

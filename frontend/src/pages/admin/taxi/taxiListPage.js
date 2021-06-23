@@ -53,10 +53,9 @@ const taxiListPage = () => {
     }
 
     const TaxiList = (taxi.map((elem) => {
-        console.log(elem.taxiNumber)
         return (
             <ListItem button>
-                <ListItemText onClick={ () => history.push('/coffee/menu/taxi/' + elem.taxiNumber) } primary={elem.taxiNumber} />
+                <ListItemText onClick={ () => history.push('/coffee/menu/taxi/' + elem.id) } primary={elem.taxiNumber} />
                 <Checkbox name={elem.id} onChange={onCheck} />
             </ListItem>
         )

@@ -60,9 +60,7 @@ const taxiInfoPage = ({ match }) => {
 
         const fetch = async () => {
             const taxi = await TaxiApi.getTaxiInfo(taxiId);
-            const customer = await ReviewApi.getReview({ taxiNumber: taxiId });
-
-            console.log(taxi.data);
+            const customer = await ReviewApi.getReview({ taxiId });
 
             setTaxiInfo({
                 taxi: taxi.data, 

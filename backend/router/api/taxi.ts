@@ -38,6 +38,49 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+router.post('/:taxiId/sample', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
+    const { sampleId, stock } = req.body;
+
+    console.log(sampleId);
+
+    try {
+        const checkTaxi = await db.Taxi.findOne({
+            id: +taxiId,
+            isDeleted: false
+        });
+
+        if (!checkTaxi)
+            return sendErrorResponse(res, 404, 'taxi_not_exists');
+        
+        const checkSample = await db.Sample.findOne({
+            id: sampleId,
+            isDeleted: false
+        });
+
+        if (!checkSample)
+            return sendErrorResponse(res, 404, 'sample_not_exists');
+
+        const checkDuplicated = await db.Taxi.findOne({
+            id: +taxiId,
+            isDeleted: false,
+            'samples._id': checkSample._id
+        });
+
+        if (checkDuplicated?.samples)
+            return sendErrorResponse(res, 404, 'sample_already_exists');
+
+        await db.Taxi.createStock(+taxiId, {
+            sample: checkSample._id,
+            stock
+        });
+
+        res.sendStatus(201);
+    } catch (err) {
+        sendErrorResponse(res, 500, 'unknown_error', err);
+    }
+});
+
 router.get('/', async (req: Request, res: Response) => {
     const { isDeleted } = req.query;
 
@@ -59,17 +102,30 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/:taxiNumber', async (req: Request, res: Response) => {
-    const { taxiNumber } = req.params;
+router.get('/:taxiId', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
+    const { isTaxiCode } = req.query;
 
     try {
-        const result: any = await db.Taxi.findOne({
-            taxiNumber: +taxiNumber,
-            isDeleted: false
-        });
+        let result: any;
 
-        if (!result || result.isDeleted)
-            return sendErrorResponse(res, 404, 'taxi_not_exists');
+        if (isTaxiCode) {
+            result = await db.Taxi.findOne({
+                taxiNumber: +taxiId,
+                isDeleted: false,
+            });
+    
+            if (!result || result.isDeleted)
+                return sendErrorResponse(res, 404, 'taxi_not_exists');
+        } else {
+            result = await db.Taxi.findOne({
+                id: +taxiId,
+                isDeleted: false,
+            }).populate('samples.sample');
+    
+            if (!result || result.isDeleted)
+                return sendErrorResponse(res, 404, 'taxi_not_exists');
+        }
 
         res.json(result);
     } catch (err) {
@@ -92,7 +148,7 @@ router.put('/:taxiId', async (req: Request, res: Response) => {
 
     if (Object.keys(driver).length != 0) update["$set"] = driver;
 
-    const result = await db.Taxi.updateByTaxiNumber(+taxiId, update);
+    const result = await db.Taxi.updateByTaxiId(+taxiId, update);
 
     if (typeof(result) !== 'boolean')
         return sendErrorResponse(res, 500, 'unknown_error', result);
@@ -104,12 +160,12 @@ router.put('/:taxiId', async (req: Request, res: Response) => {
 
 });
 
-router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
-    const { taxiNumber } = req.params;
+router.put('/:taxiId/recover', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
 
     try {
         const result: any = await db.Taxi.findOne({
-            taxiNumber: +taxiNumber,
+            id: +taxiId,
             isDeleted: true
         });
 
@@ -117,7 +173,7 @@ router.put('/:taxiNumber/recover', async (req: Request, res: Response) => {
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
         await db.Taxi.updateOne({
-            taxiNumber: +taxiNumber,
+            id: +taxiId,
             isDeleted: true
         }, {
             isDeleted: false
@@ -153,5 +209,27 @@ router.delete('/:taxiId', async (req: Request, res: Response) => {
         sendErrorResponse(res, 500, 'unknown_error', err);
     }
 });
+
+router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response) => {
+    const { taxiId, sampleId } = req.params;
+
+    try {
+        const result = await db.Taxi.findOne({
+            id: +taxiId,
+            isDeleted: false,
+            'samples.isDeleted': false,
+            'samples.sampleId': sampleId
+        });
+
+        if (!result)
+            return sendErrorResponse(res, 404, 'sample_not_exists');
+
+        await db.Taxi.deleteSample(+taxiId, +sampleId);
+
+        res.sendStatus(200);
+    } catch (err) {
+        sendErrorResponse(res, 500, 'unknown_error', err);
+    }
+})
 
 export default router;

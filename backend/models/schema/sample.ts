@@ -1,6 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 
 export default function (autoIncrement: any) {
+    interface ISampleDocument extends Document {
+    }
+
+    interface ISampleModel extends Model<ISampleDocument> {
+    }
+
     const sampleSchema = new mongoose.Schema({
         id: {
             type: Number
@@ -25,7 +31,7 @@ export default function (autoIncrement: any) {
             required: true
         },
         info: new mongoose.Schema({
-            sampleName: {
+            name: {
                 type: String,
                 required: true
             },

@@ -11,11 +11,13 @@ const errTexts: any = {
     'taxi_not_exists': '해당 TaxiNumber를 가진 Taxi가 존재하지 않습니다.',
     'taxi_already_exists': '해당 TaxiNumber를 가진 Taxi가 이미 존재합니다.',
 
+    'sample_already_exists': '이미 추가하려는 Sample이 있습니다.',
+
 }
 
 function sendErrorResponse(res: Response, statusCode: number, errText: string, err?: Error) {
     console.log("ERROR handled by sendErrorResponse");
-    console.log("ERROR PARAM: statusCode" + statusCode + ", errText" + errText);
+    console.log("ERROR PARAM: statusCode" + statusCode + ", errText " + errText);
     console.log("ERROR: ");
     console.log(err);
 

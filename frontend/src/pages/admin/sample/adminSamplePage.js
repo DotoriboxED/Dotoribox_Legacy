@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Item from '../../../components/menu/SampleBlock';
 import Logo from '../../../Logo';
 import styled from 'styled-components';
+import { List, ListItem, ListItemText, Checkbox, TextField } from '@material-ui/core';
 import { SampleApi } from '../../../api';
 
 const ItemMenu = styled.div`
@@ -45,6 +47,7 @@ const Buttons = styled.div`
 const App = () => {
     const [Sample, setSample] = useState([]);
     const [SampleView, setSampleView] = useState([]);
+    const history = useHistory();
 
     useEffect(() => {
         SampleApi.getList().then((res) => {
@@ -63,15 +66,15 @@ const App = () => {
             <Logo />
             <ItemMenu>
 
-                <Setting><b>샘플 목록</b></Setting>
+                <Setting><b>샘플 생성</b></Setting>
                 <hr />
                 <ItemMenu>
                     {SampleList}
                 </ItemMenu>
             </ItemMenu>
             <Buttons>
+                <Button onClick={() => history.push('/coffee/menu/sample/create')}>생성</Button>
                 <Button>삭제</Button>
-                <Button>생성</Button>
             </Buttons>
         </div>
     )

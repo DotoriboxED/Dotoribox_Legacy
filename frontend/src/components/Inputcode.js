@@ -128,7 +128,7 @@ const Hr=styled.hr`
 `
 
 const Space = styled.div`
-  heights: 1rem;
+  height: 1rem;
 `
 
 function Inputcode() {
@@ -152,8 +152,8 @@ function Inputcode() {
           onChange={({ target: {value}} )=>setCode(value)}
           ></Input>
         <Button onClick={() => {
-          SampleApi.getTaxiNum(parseInt(Code, 10)).then((res) => {
-            history.push({ pathname:'./selectsample', state:{Code:Code}})
+          SampleApi.taxiIsValid(parseInt(Code, 10), { isTaxiCode : true }).then((res) => {
+            history.push({ pathname:'./selectsample', state:{Code: res.data.id}})
           }).catch((err) => {
             setIsExist(false);
           });

@@ -5,7 +5,7 @@ import sendErrorResponse from '../tool/error';
 const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
-    const { taxiNumber, sampleCode, isMale, age, time, score } = req.query;
+    const { taxiNumber, taxiId, sampleCode, isMale, age, time, score } = req.query;
 
     const options: Record<string, unknown> = {}
     const sort: Record<string, unknown> = {}
@@ -14,6 +14,7 @@ router.get('/', async (req: Request, res: Response) => {
     if (age) options.age    = age;
     if (sampleCode) options.sampleCode = sampleCode
     if (taxiNumber) options.taxiNumber = taxiNumber
+    if (taxiId) options.id = taxiId;
 
     if (time == 'asc' || time == 'desc') sort.time = time;
     if (score == 'asc' || score == 'desc') sort.score = score;
