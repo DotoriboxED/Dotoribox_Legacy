@@ -70,9 +70,15 @@ router.post('/:taxiId/sample', async (req: Request, res: Response) => {
         if (checkDuplicated?.samples)
             return sendErrorResponse(res, 404, 'sample_already_exists');
 
-        await db.Taxi.createStock(+taxiId, {
+        const item = await db.Stock.create({
             sample: checkSample._id,
+            sampleId: checkSample.id,
+            taxiId: checkTaxi.id,
             stock
+        });
+
+        await db.Taxi.createStock(+taxiId, {
+            stockId: item.id
         });
 
         res.sendStatus(201);
@@ -122,12 +128,61 @@ router.get('/:taxiId', async (req: Request, res: Response) => {
                 id: +taxiId,
                 isDeleted: false,
             }).populate('samples.sample');
-    
+
             if (!result || result.isDeleted)
                 return sendErrorResponse(res, 404, 'taxi_not_exists');
         }
 
         res.json(result);
+    } catch (err) {
+        sendErrorResponse(res, 500, 'unknown_error', err);
+    }
+});
+
+router.get('/:taxiId/stock', async (req: Request, res: Response) => {
+    const { taxiId } = req.params;
+
+    try {
+        const result = await db.Taxi.aggregate([
+            {
+                $match: {
+                    id: +taxiId,
+                    isDeleted: false
+                }
+            },  
+            {
+                $lookup: {
+                    from: 'stocks',
+                    localField: 'samples.stockId',
+                    foreignField: 'id',
+                    as: 'stocks'
+                }
+            
+            }, {
+                $unwind: {
+                    path: '$stocks',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'samples',
+                    localField: 'stocks.sampleId',
+                    foreignField: 'id',
+                    as: 'stocks.info'
+                }
+            }, {
+                $unwind: {
+                    path: '$stocks.info',
+                }
+            }, {
+                $group: {
+                    _id: 0,
+                    stocks: { $push: '$stocks' }
+                }
+            }
+        ]);
+
+        res.json(result)
     } catch (err) {
         sendErrorResponse(res, 500, 'unknown_error', err);
     }

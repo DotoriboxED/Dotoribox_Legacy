@@ -48,6 +48,10 @@ export default function (autoIncrement: any) {
             default: 0,
             min: [0, 'out of stock']
         },
+        sales: {
+            type: Number,
+            default: 0
+        },
         isDeleted: {
             type: Boolean,
             default: false
@@ -93,9 +97,11 @@ export default function (autoIncrement: any) {
                 required: true
             }
         }),
-        samples: [
-            stockSchema
-        ]
+        samples: [{
+            stockId: {
+                type: Number
+            }
+        }]
     });
 
     taxiSchema.plugin(autoIncrement.plugin, {

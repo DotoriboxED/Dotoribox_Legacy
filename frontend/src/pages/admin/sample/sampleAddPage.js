@@ -79,6 +79,8 @@ const sampleEditPage = ({ match }) => {
                 <Container />
                 <TextField fullWidth name="explain" label="설명" multiline onChange={handleValueChange} />
                 <Container />
+                <TextField fullWidth name="amount" label="재고" onChange={handleValueChange} />
+                <Container />
                 <TextField fullWidth name="name" label="상품명(설명창)" onChange={handleValueChange} />
                 <Container />
                 <TextField fullWidth name="sampleType" label="샘플 종류" onChange={handleValueChange} />

@@ -41,7 +41,8 @@ router.post('/', async (req: Request, res: Response) => {
         manufacture,
         sale,
         consulting,
-        question
+        question,
+        amount
     } = req.body;
 
     if (!sampleName && !price && !explain)
@@ -59,6 +60,9 @@ router.post('/', async (req: Request, res: Response) => {
                 consulting,
                 question,
                 manufacture
+            },
+            stock: {
+                amount
             }
         });
 
@@ -168,10 +172,13 @@ router.put('/:sampleId', async (req: Request, res: Response) => {
         manufacture,
         sale,
         consulting,
-        question
+        question,
+        amount
     } = req.body;
-    const data: Record<string, unknown> = {}
-    const subData: Record<string, unknown> = {}
+    
+    const data: Record<string, unknown> = {};
+    const subData: Record<string, unknown> = {};
+    const stock: Record<string, unknown> = {};
 
     // if (!sampleName && !price && !explain)
     //     return sendErrorResponse(res, 400, 'invalid_form');
@@ -186,6 +193,11 @@ router.put('/:sampleId', async (req: Request, res: Response) => {
     if (consulting) subData.consulting = consulting;
     if (question) subData.question = question;
     if (sale) subData.sale = sale;
+
+    if (amount) {
+        stock.amount = amount;
+        data.stock = stock;
+    }
 
     if (Object.keys(subData).length > 0)
         data.info = subData;

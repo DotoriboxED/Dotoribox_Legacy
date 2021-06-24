@@ -30,6 +30,16 @@ export default function (autoIncrement: any) {
             type: String,
             required: true
         },
+        stock: new mongoose.Schema({
+            amount: {
+                type: Number,
+                default: 0
+            },
+            sales: {
+                type: Number,
+                default: 0
+            }
+        }),
         info: new mongoose.Schema({
             name: {
                 type: String,

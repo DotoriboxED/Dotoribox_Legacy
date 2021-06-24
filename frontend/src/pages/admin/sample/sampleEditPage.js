@@ -66,24 +66,39 @@ const sampleEditPage = ({ match }) => {
                 <Setting><b>제품 수정</b></Setting>
                 <hr />
                 <Picture src={API_URL + '/api/sample/' + sampleId + '/image'} />
-                <Container/>
-                
+                <Container />
+
                 <Button variant="contained" component="label" fullWidth>
                     이미지 선택
-                    <input type="file" accept="image/*" onChange={e => imageHandler(e)} hidden/>
+                    <input type="file" accept="image/*" onChange={e => imageHandler(e)} hidden />
                 </Button>
-                <Container/>
+                <Container />
                 {
                     sample &&
-                    <form onSubmit={submitHandler} >
-                        <TextField fullWidth name="sampleName" label="상품명" defaultValue={sample.sampleName} onChange={handleValueChange} />
+                    <div>
                         <Container />
-                        <TextField fullWidth name="price" label="가격" defaultValue={sample.price} onChange={handleValueChange} />
+                        <TextField fullWidth name="sampleName" label="상품명" onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="explain" label="설명" multiline defaultValue={sample.explain} onChange={handleValueChange} />
+                        <TextField fullWidth name="price" label="가격" onChange={handleValueChange} />
                         <Container />
-                        <Button variant="contained" type="submit" fullWidth>제출</Button>
-                    </form>
+                        <TextField fullWidth name="explain" label="설명" multiline onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="amount" label="재고" onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="name" label="상품명(설명창)" onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="sampleType" label="샘플 종류" onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="manufacture" label="제조사" onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="sale" label="판매처" onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="consulting" label="소비자상담실" onChange={handleValueChange} />
+                        <Container />
+                        <TextField fullWidth name="question" label="도토리박스 문의" onChange={handleValueChange} />
+                        <Container />
+                        <Button variant="contained" type="submit" onClick={() => submitHandler()} fullWidth>제출</Button>
+                    </div>
                 }
             </Body>
         </div>
