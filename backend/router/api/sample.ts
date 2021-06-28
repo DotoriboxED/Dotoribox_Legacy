@@ -5,7 +5,8 @@ import path from 'path';
 import { v4 as uuid } from 'uuid';
 import { unlink } from 'fs/promises';
 
-import sendErrorResponse from '../tool/error';
+import sendErrorResponse from '../../tool/error';
+import { InvalidFormError, NotDeletedError, SampleNotFoundError } from '../../tool/errorException';
 
 const router = Router();
 
@@ -32,7 +33,7 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response, next: Function) => {
     const { sampleName,
         price,
         explain,
@@ -46,7 +47,7 @@ router.post('/', async (req: Request, res: Response) => {
     } = req.body;
 
     if (!sampleName && !price && !explain)
-        return sendErrorResponse(res, 400, 'invalid_form');
+        throw new InvalidFormError();
 
     try {
         const result = await db.Sample.create({
@@ -68,46 +69,12 @@ router.post('/', async (req: Request, res: Response) => {
 
         res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 }
 )
 
-router.post('/:taxiId/stock', async (req: Request, res: Response) => {
-    const { taxiId } = req.params;
-    const { sampleId, stock } = req.body;
-
-    try {
-        const taxiIsExist = await db.Taxi.findOne({
-            taxiNumber: +taxiId,
-            isDeleted: false
-        });
-
-        if (!taxiIsExist)
-            return sendErrorResponse(res, 404, 'taxi_not_exists');
-
-        const sampleIsExist = await db.Sample.findOne({
-            id: sampleId,
-            isDeleted: false
-        });
-
-        if (!sampleIsExist)
-            return sendErrorResponse(res, 404, 'sample_not_exists');
-
-        await db.Taxi.createStock(+taxiId, {
-            taxiId,
-            sampleId,
-            stock,
-            sample: sampleIsExist._id
-        });
-
-        res.sendStatus(201);
-    } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
-    }
-});
-
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response, next: Function) => {
     const { isDeleted } = req.query;
 
     try {
@@ -126,11 +93,11 @@ router.get('/', async (req: Request, res: Response) => {
         }
 
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.get('/:sampleId/image', async (req: Request, res: Response) => {
+router.get('/:sampleId/image', async (req: Request, res: Response, next: Function) => {
     const { sampleId } = req.params;
 
     try {
@@ -140,13 +107,13 @@ router.get('/:sampleId/image', async (req: Request, res: Response) => {
         });
 
         if (result) res.download('./uploads/' + result.image);
-        else sendErrorResponse(res, 404, 'sample_not_exists');
+        else throw new SampleNotFoundError();
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.get('/:sampleId', async (req: Request, res: Response) => {
+router.get('/:sampleId', async (req: Request, res: Response, next: Function) => {
     const { sampleId } = req.params;
 
     try {
@@ -156,13 +123,13 @@ router.get('/:sampleId', async (req: Request, res: Response) => {
         });
 
         if (result) res.json(result);
-        else sendErrorResponse(res, 404, 'sample_not_exists');
+        else throw new SampleNotFoundError();
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.put('/:sampleId', async (req: Request, res: Response) => {
+router.put('/:sampleId', async (req: Request, res: Response, next: Function) => {
     const { sampleId } = req.params;
     const { sampleName,
         price,
@@ -175,7 +142,7 @@ router.put('/:sampleId', async (req: Request, res: Response) => {
         question,
         amount
     } = req.body;
-    
+
     const data: Record<string, unknown> = {};
     const subData: Record<string, unknown> = {};
     const stock: Record<string, unknown> = {};
@@ -209,11 +176,11 @@ router.put('/:sampleId', async (req: Request, res: Response) => {
         }, data, { returnOriginal: false });
 
         if (!result)
-            return sendErrorResponse(res, 403, 'sample_not_exists');
+            throw new SampleNotFoundError();
 
         res.sendStatus(200);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err)
+        next(err);
     }
 });
 
@@ -223,62 +190,58 @@ router.put('/:sampleId/image',
         next();
     },
     upload.single('attachment'),
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: Function) => {
         const { sampleId } = req.params;
 
         const ext = path.extname(req.file.originalname);
         const fileName = req.newFilename + ext;
 
         try {
-            const isExist: any = await db.Sample.findOne({
+            const result: any = await db.Sample.findOneAndUpdate({
                 id: sampleId,
                 isDeleted: false
-            });
-
-            if (!isExist)
-                return sendErrorResponse(res, 404, 'sample_not_exists');
-
-            if (isExist.image !== undefined)
-                unlink('./uploads/' + isExist.image);
-
-            await db.Sample.updateOne({
-                id: sampleId
             }, {
                 image: fileName
+            }, {
+                new: false
             });
+
+            if (!result)
+                throw new SampleNotFoundError();
+
+            if (result.image !== undefined) 
+                unlink('./uploads/' + result.image);
 
             res.sendStatus(200);
         } catch (err) {
-            sendErrorResponse(res, 500, 'unknown_error', err);
+            next(err);
         }
     }
 );
 
-router.put('/:sampleId/recover', async (req: Request, res: Response) => {
+router.put('/:sampleId/recover', async (req: Request, res: Response, next: Function) => {
     const { sampleId } = req.params;
 
     try {
-        const isExist: any = await db.Sample.findOne({
+        const result = await db.Sample.findOneAndUpdate({
             id: sampleId,
             isDeleted: true
-        });
-
-        if (!isExist)
-            return sendErrorResponse(res, 404, 'sample_not_exists');
-
-        await db.Sample.updateOne({
-            id: sampleId
         }, {
             isDeleted: false
+        }, {
+            new: true
         });
 
-        res.sendStatus(200);
+        if (!result)
+            throw new SampleNotFoundError();
+
+        res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.delete('/:sampleId', async (req: Request, res: Response) => {
+router.delete('/:sampleId', async (req: Request, res: Response, next: Function) => {
     const { permanent } = req.query;
     const { sampleId } = req.params;
 
@@ -288,11 +251,11 @@ router.delete('/:sampleId', async (req: Request, res: Response) => {
         });
 
         if (!isExist)
-            return sendErrorResponse(res, 404, 'sample_not_exists');
+            throw new SampleNotFoundError();
 
         if (permanent) {
             if (isExist.isDeleted === false)
-                return sendErrorResponse(res, 403, 'permanent_needs_delete');
+                throw new NotDeletedError();
 
             unlink('./uploads/' + isExist.image);
 
@@ -301,7 +264,7 @@ router.delete('/:sampleId', async (req: Request, res: Response) => {
             });
         } else {
             if (isExist.isDeleted === true)
-                return sendErrorResponse(res, 404, 'sample_not_exists');
+                throw new SampleNotFoundError();
 
             await db.Sample.updateOne({
                 id: sampleId
@@ -310,9 +273,9 @@ router.delete('/:sampleId', async (req: Request, res: Response) => {
             });
         }
 
-        res.sendStatus(200);
+        res.json(isExist);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 

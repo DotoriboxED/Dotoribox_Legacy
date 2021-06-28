@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
 import db from '../../models';
-import sendErrorResponse from '../tool/error';
+import sendErrorResponse from '../../tool/error';
+import { TaxiNotFoundError, SampleNotFoundError } from '../../tool/errorException';
 
 const router = Router();
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response, next: Function) => {
     const { 
         taxiNumber, 
         driverName, 
@@ -19,7 +20,7 @@ router.post('/', async (req: Request, res: Response) => {
         });
 
         if (check)
-            return sendErrorResponse(res, 403, 'taxi_already_exists');
+            throw new TaxiNotFoundError();
 
         await db.Taxi.create({
             taxiNumber,
@@ -34,15 +35,13 @@ router.post('/', async (req: Request, res: Response) => {
 
         res.sendStatus(201);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.post('/:taxiId/sample', async (req: Request, res: Response) => {
+router.post('/:taxiId/sample', async (req: Request, res: Response, next: Function) => {
     const { taxiId } = req.params;
     const { sampleId, stock } = req.body;
-
-    console.log(sampleId);
 
     try {
         const checkTaxi = await db.Taxi.findOne({
@@ -51,7 +50,7 @@ router.post('/:taxiId/sample', async (req: Request, res: Response) => {
         });
 
         if (!checkTaxi)
-            return sendErrorResponse(res, 404, 'taxi_not_exists');
+            throw new TaxiNotFoundError();
         
         const checkSample = await db.Sample.findOne({
             id: sampleId,
@@ -59,7 +58,7 @@ router.post('/:taxiId/sample', async (req: Request, res: Response) => {
         });
 
         if (!checkSample)
-            return sendErrorResponse(res, 404, 'sample_not_exists');
+            throw new SampleNotFoundError();
 
         const checkDuplicated = await db.Taxi.findOne({
             id: +taxiId,
@@ -70,24 +69,20 @@ router.post('/:taxiId/sample', async (req: Request, res: Response) => {
         if (checkDuplicated?.samples)
             return sendErrorResponse(res, 404, 'sample_already_exists');
 
-        const item = await db.Stock.create({
+        await db.Stock.createStock(+taxiId, {
             sample: checkSample._id,
             sampleId: checkSample.id,
             taxiId: checkTaxi.id,
             stock
         });
 
-        await db.Taxi.createStock(+taxiId, {
-            stockId: item.id
-        });
-
         res.sendStatus(201);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response, next: Function) => {
     const { isDeleted } = req.query;
 
     try {
@@ -104,11 +99,11 @@ router.get('/', async (req: Request, res: Response) => {
 
         res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.get('/:taxiId', async (req: Request, res: Response) => {
+router.get('/:taxiId', async (req: Request, res: Response, next: Function) => {
     const { taxiId } = req.params;
     const { isTaxiCode } = req.query;
 
@@ -122,7 +117,7 @@ router.get('/:taxiId', async (req: Request, res: Response) => {
             });
     
             if (!result || result.isDeleted)
-                return sendErrorResponse(res, 404, 'taxi_not_exists');
+                throw new TaxiNotFoundError();
         } else {
             result = await db.Taxi.findOne({
                 id: +taxiId,
@@ -130,16 +125,16 @@ router.get('/:taxiId', async (req: Request, res: Response) => {
             }).populate('samples.sample');
 
             if (!result || result.isDeleted)
-                return sendErrorResponse(res, 404, 'taxi_not_exists');
+                throw new TaxiNotFoundError();
         }
 
         res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.get('/:taxiId/stock', async (req: Request, res: Response) => {
+router.get('/:taxiId/stock', async (req: Request, res: Response, next: Function) => {
     const { taxiId } = req.params;
 
     try {
@@ -184,11 +179,11 @@ router.get('/:taxiId/stock', async (req: Request, res: Response) => {
 
         res.json(result)
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.put('/:taxiId', async (req: Request, res: Response) => {
+router.put('/:taxiId', async (req: Request, res: Response, next: Function) => {
     const { taxiId } = req.params;
     const { driverName, phoneNumber, taxiNumber, accountNumber, licensePlate, group } = req.body;
     const update: any = {};
@@ -203,69 +198,60 @@ router.put('/:taxiId', async (req: Request, res: Response) => {
 
     if (Object.keys(driver).length != 0) update["$set"] = driver;
 
-    const result = await db.Taxi.updateByTaxiId(+taxiId, update);
-
-    if (typeof(result) !== 'boolean')
-        return sendErrorResponse(res, 500, 'unknown_error', result);
-
-    if (!result)
-        return sendErrorResponse(res, 404, 'taxi_not_exists');
-    
-    res.sendStatus(200);
-
-});
-
-router.put('/:taxiId/recover', async (req: Request, res: Response) => {
-    const { taxiId } = req.params;
-
     try {
-        const result: any = await db.Taxi.findOne({
-            id: +taxiId,
-            isDeleted: true
-        });
-
-        if (!result || !result.isDeleted)
-            return sendErrorResponse(res, 404, 'taxi_not_exists');
-
-        await db.Taxi.updateOne({
-            id: +taxiId,
-            isDeleted: true
-        }, {
-            isDeleted: false
-        });
+        await db.Taxi.updateByTaxiId(+taxiId, update);
 
         res.sendStatus(200);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
-})
+});
 
-router.delete('/:taxiId', async (req: Request, res: Response) => {
+router.put('/:taxiId/recover', async (req: Request, res: Response, next: Function) => {
     const { taxiId } = req.params;
 
     try {
-        const result: any = await db.Taxi.findOne({
+        const result: any = await db.Taxi.findOneAndUpdate({
+            id: +taxiId,
+            isDeleted: true
+        },{
+            isDeleted: false
+        }, {
+            new: false
+        });
+
+        if (!result || !result.isDeleted)
+            throw new TaxiNotFoundError();
+
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+})
+
+router.delete('/:taxiId', async (req: Request, res: Response, next: Function) => {
+    const { taxiId } = req.params;
+
+    try {
+        const result: any = await db.Taxi.findOneAndUpdate({
             id: taxiId,
             isDeleted: false
+        }, {
+            isDeleted: true
+        }, {
+            new: false
         });
 
         if (!result || result.isDeleted)
             return sendErrorResponse(res, 404, 'taxi_not_exists');
 
-        await db.Taxi.updateOne({
-            id: taxiId,
-            isDeleted: false
-        }, {
-            isDeleted: true
-        });
-
-        res.sendStatus(200);
+        res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response) => {
+router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response, next: Function) => {
     const { taxiId, sampleId } = req.params;
 
     try {
@@ -277,13 +263,13 @@ router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response) =
         });
 
         if (!result)
-            return sendErrorResponse(res, 404, 'sample_not_exists');
+            throw new TaxiNotFoundError();
 
-        await db.Taxi.deleteSample(+taxiId, +sampleId);
+        await db.Stock.deleteSample(+taxiId, +sampleId);
 
         res.sendStatus(200);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 })
 

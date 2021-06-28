@@ -5,7 +5,7 @@ export default function (autoIncrement: any) {
         id: {
             type: Number
         },
-        taxiNumber: {
+        taxiId: {
             type: Number,
             required: true
         },

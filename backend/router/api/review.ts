@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
 import db from '../../models';
-import sendErrorResponse from '../tool/error';
+import sendErrorResponse from '../../tool/error';
+import { ReviewNotFoundError, UnknownError } from '../../tool/errorException';
 
 const router = Router();
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response, next: Function) => {
     const { taxiNumber, taxiId, sampleCode, isMale, age, time, score } = req.query;
 
     const options: Record<string, unknown> = {}
@@ -20,38 +21,38 @@ router.get('/', async (req: Request, res: Response) => {
     if (score == 'asc' || score == 'desc') sort.score = score;
 
     try {
-        console.log(options.taxiNumber);
         const result = await db.Customer.find(options).sort(sort);
 
         res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response, next: Function) => {
     const { taxiNumber, sampleCode, isMale, age } = req.body;
 
     if (!taxiNumber || !sampleCode || isMale === undefined || !age)
         return sendErrorResponse(res, 400, 'invalid_form')
 
     try {
+        await db.Stock.useSample(+taxiNumber, +sampleCode);
+
+        // taxiNumber를 TaxiID로 수정하기
         const item = await db.Customer.create({
-            taxiNumber,
+            taxiId: taxiNumber,
             sampleCode,
             isMale,
             age
         });
 
-        console.log(item);
-
-        res.json({ id: item.id });
+        res.json(item);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
-router.post('/:customerId/evaluate', async (req: Request, res: Response) => {
+router.post('/:customerId/evaluate', async (req: Request, res: Response, next: Function) => {
     const { customerId } = req.params;
     const { score, review } = req.body;
     const data: Record<string, unknown> = {};
@@ -60,20 +61,18 @@ router.post('/:customerId/evaluate', async (req: Request, res: Response) => {
     if (review) data.review = review;
 
     try {
-        const isExist = await db.Customer.findOne({
+        const result = db.Customer.findOneAndUpdate({
             id: customerId
+        }, data, {
+            new: true
         });
 
-        if (!isExist)
-            return sendErrorResponse(res, 404, 'review_not_exists');
+        if (!result)
+            throw new ReviewNotFoundError();
 
-        await db.Customer.updateOne({
-            id: customerId
-        }, data);
-
-        res.sendStatus(201);
+        res.json(result);
     } catch (err) {
-        sendErrorResponse(res, 500, 'unknown_error', err);
+        next(err);
     }
 });
 
