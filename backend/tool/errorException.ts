@@ -23,6 +23,11 @@ export class SampleAlreadyExistError extends Error {
     status = 409;
 }
 
+export class TaxiAlreadyExistError extends Error {
+    message = '택시가 이미 존재합니다.'
+    status = 409;
+}
+
 export class InvalidFormError extends Error {
     message = '입력한 형식이 올바르지 않습니다.';
     status = 400;

@@ -4,9 +4,9 @@ import db from '../../models';
 import path from 'path';
 import { v4 as uuid } from 'uuid';
 import { unlink } from 'fs/promises';
-
-import sendErrorResponse from '../../tool/error';
 import { InvalidFormError, NotDeletedError, SampleNotFoundError } from '../../tool/errorException';
+import {SampleDTO} from "../../models/dto/sampleDTO";
+import sampleService from "../../services/sampleService";
 
 const router = Router();
 
@@ -34,39 +34,10 @@ const upload = multer({
 });
 
 router.post('/', async (req: Request, res: Response, next: Function) => {
-    const { sampleName,
-        price,
-        explain,
-        name,
-        sampleType,
-        manufacture,
-        sale,
-        consulting,
-        question,
-        amount
-    } = req.body;
-
-    if (!sampleName && !price && !explain)
-        throw new InvalidFormError();
+    const sampleDto: SampleDTO = new SampleDTO(req.body);
 
     try {
-        const result = await db.Sample.create({
-            sampleName,
-            price,
-            explain,
-            info: {
-                name,
-                sampleType,
-                sale,
-                consulting,
-                question,
-                manufacture
-            },
-            stock: {
-                amount
-            }
-        });
-
+        const result = await sampleService.createSample(sampleDto);
         res.json(result);
     } catch (err) {
         next(err);
@@ -78,20 +49,8 @@ router.get('/', async (req: Request, res: Response, next: Function) => {
     const { isDeleted } = req.query;
 
     try {
-        if (isDeleted) {
-            const result = await db.Sample.find({
-                isDeleted
-            });
-
-            res.json(result);
-        } else {
-            const result = await db.Sample.find({
-                isDeleted: false
-            });
-
-            res.json(result);
-        }
-
+        const result = sampleService.getSample(isDeleted as unknown as boolean);
+        res.json(result);
     } catch (err) {
         next(err);
     }
@@ -101,13 +60,8 @@ router.get('/:sampleId/image', async (req: Request, res: Response, next: Functio
     const { sampleId } = req.params;
 
     try {
-        const result: any = await db.Sample.findOne({
-            id: sampleId,
-            isDeleted: false
-        });
-
-        if (result) res.download('./uploads/' + result.image);
-        else throw new SampleNotFoundError();
+        const result = await sampleService.getSampleImage(+sampleId);
+        res.download('./uploads/' + result.image);
     } catch (err) {
         next(err);
     }
@@ -117,13 +71,8 @@ router.get('/:sampleId', async (req: Request, res: Response, next: Function) => 
     const { sampleId } = req.params;
 
     try {
-        const result = await db.Sample.findOne({
-            id: sampleId,
-            isDeleted: false
-        });
-
-        if (result) res.json(result);
-        else throw new SampleNotFoundError();
+        const result = await sampleService.findSample(+sampleId);
+        res.json(result);
     } catch (err) {
         next(err);
     }
@@ -131,54 +80,11 @@ router.get('/:sampleId', async (req: Request, res: Response, next: Function) => 
 
 router.put('/:sampleId', async (req: Request, res: Response, next: Function) => {
     const { sampleId } = req.params;
-    const { sampleName,
-        price,
-        explain,
-        name,
-        sampleType,
-        manufacture,
-        sale,
-        consulting,
-        question,
-        amount
-    } = req.body;
-
-    const data: Record<string, unknown> = {};
-    const subData: Record<string, unknown> = {};
-    const stock: Record<string, unknown> = {};
-
-    // if (!sampleName && !price && !explain)
-    //     return sendErrorResponse(res, 400, 'invalid_form');
-
-    if (sampleName) data.sampleName = sampleName;
-    if (price) data.price = price;
-    if (explain) data.explain = explain;
-
-    if (name) subData.sampleName = name;
-    if (sampleType) subData.sampleType = sampleType;
-    if (manufacture) subData.sale = sale;
-    if (consulting) subData.consulting = consulting;
-    if (question) subData.question = question;
-    if (sale) subData.sale = sale;
-
-    if (amount) {
-        stock.amount = amount;
-        data.stock = stock;
-    }
-
-    if (Object.keys(subData).length > 0)
-        data.info = subData;
+    const sampleDto: SampleDTO = req.body;
 
     try {
-        const result = await db.Sample.findOneAndUpdate({
-            id: sampleId,
-            isDeleted: false
-        }, data, { returnOriginal: false });
-
-        if (!result)
-            throw new SampleNotFoundError();
-
-        res.sendStatus(200);
+        const result = sampleService.updateSample(sampleDto, +sampleId);
+        res.json(result);
     } catch (err) {
         next(err);
     }
@@ -197,22 +103,8 @@ router.put('/:sampleId/image',
         const fileName = req.newFilename + ext;
 
         try {
-            const result: any = await db.Sample.findOneAndUpdate({
-                id: sampleId,
-                isDeleted: false
-            }, {
-                image: fileName
-            }, {
-                new: false
-            });
-
-            if (!result)
-                throw new SampleNotFoundError();
-
-            if (result.image !== undefined) 
-                unlink('./uploads/' + result.image);
-
-            res.sendStatus(200);
+            const result = await sampleService.createSampleImage(+sampleId, fileName);
+            res.json(result);
         } catch (err) {
             next(err);
         }
@@ -223,18 +115,7 @@ router.put('/:sampleId/recover', async (req: Request, res: Response, next: Funct
     const { sampleId } = req.params;
 
     try {
-        const result = await db.Sample.findOneAndUpdate({
-            id: sampleId,
-            isDeleted: true
-        }, {
-            isDeleted: false
-        }, {
-            new: true
-        });
-
-        if (!result)
-            throw new SampleNotFoundError();
-
+        const result = await sampleService.recoverSample(+sampleId);
         res.json(result);
     } catch (err) {
         next(err);
@@ -246,34 +127,8 @@ router.delete('/:sampleId', async (req: Request, res: Response, next: Function) 
     const { sampleId } = req.params;
 
     try {
-        const isExist: any = await db.Sample.findOne({
-            id: sampleId
-        });
-
-        if (!isExist)
-            throw new SampleNotFoundError();
-
-        if (permanent) {
-            if (isExist.isDeleted === false)
-                throw new NotDeletedError();
-
-            unlink('./uploads/' + isExist.image);
-
-            await db.Sample.deleteOne({
-                id: sampleId
-            });
-        } else {
-            if (isExist.isDeleted === true)
-                throw new SampleNotFoundError();
-
-            await db.Sample.updateOne({
-                id: sampleId
-            }, {
-                isDeleted: true
-            });
-        }
-
-        res.json(isExist);
+        const result = await sampleService.deleteSample(+sampleId, permanent as unknown as boolean);
+        res.json(result);
     } catch (err) {
         next(err);
     }

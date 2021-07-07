@@ -35,9 +35,9 @@ mongoose.set('useCreateIndex', true);
 autoIncrement.initialize(mongoose.connection);
 
 const db = {
-    ...Customers(autoIncrement), 
+    ...Customers(autoIncrement),
     ...Drivers(autoIncrement),
     ...Samples(autoIncrement)
-} // Input Database Object Here
+}
 
 export default db;

@@ -6,6 +6,7 @@ import logger from 'morgan';
 import indexRouter from './router/index';
 import helmet from 'helmet';
 import cors from 'cors';
+import 'reflect-metadata'
 
 import apiRouter from './router/api';
 const app = express();

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { TaxiNotFoundError } from '../../../tool/errorException'
-import { ITaxiDocument, ITaxiModel } from './drivers';
+import {ITaxiDocument, ITaxiModel} from "./taxiInterfaces";
 
 export default function (taxiSchema: Schema<ITaxiDocument>) {
     taxiSchema.statics.updateByTaxiId = async function (taxiId: number, update: object) {

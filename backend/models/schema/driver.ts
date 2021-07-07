@@ -1,7 +1,8 @@
 import mongoose, { Document } from 'mongoose';
-import stockFunctions from './interfaces/stockFunctions';
-import taxiFunctions from './interfaces/taxiFunctions';
-import { ITaxiDocument, IStockDocument, IStockModel, ITaxiModel } from './interfaces/drivers';
+import stockFunctions from '../repository/stock/stockFunctions';
+import taxiFunctions from '../repository/taxi/taxiFunctions';
+import {IStockDocument, IStockModel} from "../repository/stock/stockInterfaces";
+import {ITaxi, ITaxiDocument, ITaxiModel} from "../repository/taxi/taxiInterfaces";
 
 export default function (autoIncrement: any) {
     const stockSchema = new mongoose.Schema({
@@ -98,8 +99,8 @@ export default function (autoIncrement: any) {
     stockFunctions(stockSchema);
     taxiFunctions(taxiSchema);
 
-    const Taxi = mongoose.model<ITaxiDocument, ITaxiModel>('Taxi', taxiSchema);
-    const Stock = mongoose.model<IStockDocument, IStockModel>('Stock', stockSchema);
+    const Taxi = mongoose.model<ITaxi>('Taxi', taxiSchema);
+    const Stock = mongoose.model('Stock', stockSchema);
 
     return {
         Taxi,

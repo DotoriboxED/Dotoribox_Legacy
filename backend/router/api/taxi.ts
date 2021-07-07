@@ -1,101 +1,38 @@
-import { Router, Request, Response } from 'express';
-import db from '../../models';
-import sendErrorResponse from '../../tool/error';
-import { TaxiNotFoundError, SampleNotFoundError } from '../../tool/errorException';
+import {Router, Request, Response} from 'express';
+import {createStockDto} from "../../models/dto/stockDTO";
+import {TaxiDto} from "../../models/dto/taxiDTO";
+import TaxiService from '../../services/taxiService'
+import StockService from "../../services/stockService";
+import taxiService from "../../services/taxiService";
 
 const router = Router();
 
 router.post('/', async (req: Request, res: Response, next: Function) => {
-    const { 
-        taxiNumber, 
-        driverName, 
-        phoneNumber, 
-        accountNumber, 
-        licensePlate, 
-        group } = req.body;
+    const taxiDto: TaxiDto = new TaxiDto(req.body);
 
     try {
-        const check = await db.Taxi.findOne({
-            taxiNumber
-        });
-
-        if (check)
-            throw new TaxiNotFoundError();
-
-        await db.Taxi.create({
-            taxiNumber,
-            driver: {
-                name: driverName,
-                phoneNumber,
-                accountNumber,
-                licensePlate,
-                group
-            }
-        });
-
-        res.sendStatus(201);
+        const result = await TaxiService.createTaxi(taxiDto);
+        res.json(result);
     } catch (err) {
         next(err);
     }
 });
 
 router.post('/:taxiId/sample', async (req: Request, res: Response, next: Function) => {
-    const { taxiId } = req.params;
-    const { sampleId, stock } = req.body;
+    const {taxiId} = req.params;
+    const {sampleId, stock} = req.body;
 
     try {
-        const checkTaxi = await db.Taxi.findOne({
-            id: +taxiId,
-            isDeleted: false
-        });
+        const {Taxi, Sample} = await StockService.checkStock(+sampleId, +taxiId);
 
-        if (!checkTaxi)
-            throw new TaxiNotFoundError();
-        
-        const checkSample = await db.Sample.findOne({
-            id: sampleId,
-            isDeleted: false
-        });
-
-        if (!checkSample)
-            throw new SampleNotFoundError();
-
-        const checkDuplicated = await db.Taxi.findOne({
-            id: +taxiId,
-            isDeleted: false,
-            'samples._id': checkSample._id
-        });
-
-        if (checkDuplicated?.samples)
-            return sendErrorResponse(res, 404, 'sample_already_exists');
-
-        await db.Stock.createStock(+taxiId, {
-            sample: checkSample._id,
-            sampleId: checkSample.id,
-            taxiId: checkTaxi.id,
+        const stockDto: createStockDto = new createStockDto({
+            taxiId: Taxi.id,
+            sample: Sample._id,
+            sampleId: Sample.id,
             stock
         });
 
-        res.sendStatus(201);
-    } catch (err) {
-        next(err);
-    }
-});
-
-router.get('/', async (req: Request, res: Response, next: Function) => {
-    const { isDeleted } = req.query;
-
-    try {
-        let result;
-        if (!isDeleted) {
-            result = await db.Taxi.find({
-                isDeleted: false
-            });
-        } else {
-            result = await db.Taxi.find({
-                isDeleted: true
-            });
-        }
+        const result = await StockService.createStock(stockDto);
 
         res.json(result);
     } catch (err) {
@@ -103,31 +40,28 @@ router.get('/', async (req: Request, res: Response, next: Function) => {
     }
 });
 
-router.get('/:taxiId', async (req: Request, res: Response, next: Function) => {
-    const { taxiId } = req.params;
-    const { isTaxiCode } = req.query;
+router.get('/', async (req: Request, res: Response, next: Function) => {
+    const {isDeleted} = req.query;
 
     try {
-        let result: any;
+        const result = await TaxiService.getTaxiAll(isDeleted as unknown as boolean);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
 
-        if (isTaxiCode) {
-            result = await db.Taxi.findOne({
-                taxiNumber: +taxiId,
-                isDeleted: false,
-            });
-    
-            if (!result || result.isDeleted)
-                throw new TaxiNotFoundError();
-        } else {
-            result = await db.Taxi.findOne({
-                id: +taxiId,
-                isDeleted: false,
-            }).populate('samples.sample');
+router.get('/:taxiNumber', async (req: Request, res: Response, next: Function) => {
+    const {taxiNumber} = req.params;
+    const {isTaxiCode} = req.query;
 
-            if (!result || result.isDeleted)
-                throw new TaxiNotFoundError();
-        }
+    try {
+        let result;
 
+        if (isTaxiCode)
+            result = await TaxiService.getTaxiByNumber(+taxiNumber);
+        else
+            result = await TaxiService.getTaxi(+taxiNumber);
         res.json(result);
     } catch (err) {
         next(err);
@@ -135,48 +69,10 @@ router.get('/:taxiId', async (req: Request, res: Response, next: Function) => {
 });
 
 router.get('/:taxiId/stock', async (req: Request, res: Response, next: Function) => {
-    const { taxiId } = req.params;
+    const {taxiId} = req.params;
 
     try {
-        const result = await db.Taxi.aggregate([
-            {
-                $match: {
-                    id: +taxiId,
-                    isDeleted: false
-                }
-            },  
-            {
-                $lookup: {
-                    from: 'stocks',
-                    localField: 'samples.stockId',
-                    foreignField: 'id',
-                    as: 'stocks'
-                }
-            
-            }, {
-                $unwind: {
-                    path: '$stocks',
-                    preserveNullAndEmptyArrays: true
-                }
-            }, {
-                $lookup: {
-                    from: 'samples',
-                    localField: 'stocks.sampleId',
-                    foreignField: 'id',
-                    as: 'stocks.info'
-                }
-            }, {
-                $unwind: {
-                    path: '$stocks.info',
-                }
-            }, {
-                $group: {
-                    _id: 0,
-                    stocks: { $push: '$stocks' }
-                }
-            }
-        ]);
-
+        const result = await StockService.getStock(+taxiId);
         res.json(result)
     } catch (err) {
         next(err);
@@ -184,45 +80,22 @@ router.get('/:taxiId/stock', async (req: Request, res: Response, next: Function)
 });
 
 router.put('/:taxiId', async (req: Request, res: Response, next: Function) => {
-    const { taxiId } = req.params;
-    const { driverName, phoneNumber, taxiNumber, accountNumber, licensePlate, group } = req.body;
-    const update: any = {};
-    const driver: Record<string, unknown> = {};
-
-    if (driverName) driver['driver.name'] = driverName;
-    if (phoneNumber) driver['driver.phoneNumber'] = phoneNumber;
-    if (taxiNumber) update.taxiNumber = taxiNumber;
-    if (accountNumber) driver['driver.accountNumber'] = accountNumber;
-    if (licensePlate) driver['driver.licensePlate'] = licensePlate;
-    if (group) driver['driver.group'] = group;
-
-    if (Object.keys(driver).length != 0) update["$set"] = driver;
+    const {taxiId} = req.params;
+    const taxiDto = new TaxiDto(req.body);
 
     try {
-        await db.Taxi.updateByTaxiId(+taxiId, update);
-
-        res.sendStatus(200);
+        const result = await TaxiService.updateByTaxiId(taxiDto, +taxiId);
+        res.json(result);
     } catch (err) {
         next(err);
     }
 });
 
 router.put('/:taxiId/recover', async (req: Request, res: Response, next: Function) => {
-    const { taxiId } = req.params;
+    const {taxiId} = req.params;
 
     try {
-        const result: any = await db.Taxi.findOneAndUpdate({
-            id: +taxiId,
-            isDeleted: true
-        },{
-            isDeleted: false
-        }, {
-            new: false
-        });
-
-        if (!result || !result.isDeleted)
-            throw new TaxiNotFoundError();
-
+        const result = TaxiService.recoverDeletedTaxi(+taxiId);
         res.json(result);
     } catch (err) {
         next(err);
@@ -230,21 +103,10 @@ router.put('/:taxiId/recover', async (req: Request, res: Response, next: Functio
 })
 
 router.delete('/:taxiId', async (req: Request, res: Response, next: Function) => {
-    const { taxiId } = req.params;
+    const {taxiId} = req.params;
 
     try {
-        const result: any = await db.Taxi.findOneAndUpdate({
-            id: taxiId,
-            isDeleted: false
-        }, {
-            isDeleted: true
-        }, {
-            new: false
-        });
-
-        if (!result || result.isDeleted)
-            return sendErrorResponse(res, 404, 'taxi_not_exists');
-
+        const result = await taxiService.deleteTaxi(+taxiId);
         res.json(result);
     } catch (err) {
         next(err);
@@ -252,20 +114,11 @@ router.delete('/:taxiId', async (req: Request, res: Response, next: Function) =>
 });
 
 router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response, next: Function) => {
-    const { taxiId, sampleId } = req.params;
+    const stockDto: createStockDto = req.params as unknown as createStockDto;
 
     try {
-        const result = await db.Taxi.findOne({
-            id: +taxiId,
-            isDeleted: false,
-            'samples.isDeleted': false,
-            'samples.sampleId': sampleId
-        });
-
-        if (!result)
-            throw new TaxiNotFoundError();
-
-        await db.Stock.deleteSample(+taxiId, +sampleId);
+        await taxiService.checkTaxi(+req.params.taxiId);
+        await StockService.deleteStock(stockDto);
 
         res.sendStatus(200);
     } catch (err) {

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
-import { IStockDocument } from './drivers';
 import { TaxiSampleNotFoundError, SampleNotFoundError, TaxiNotFoundError } from '../../../tool/errorException';
+import {IStockDocument} from "./stockInterfaces";
 
 export default function (stockSchema: Schema<IStockDocument>) {
     stockSchema.statics.createStock = async function (taxiId: number, sampleObj: object) {
@@ -86,4 +86,6 @@ export default function (stockSchema: Schema<IStockDocument>) {
 
         return result;
     }
+
+    return stockSchema;
 }

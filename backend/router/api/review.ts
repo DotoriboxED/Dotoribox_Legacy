@@ -1,28 +1,27 @@
 import { Router, Request, Response } from 'express';
-import db from '../../models';
-import sendErrorResponse from '../../tool/error';
-import { ReviewNotFoundError, UnknownError } from '../../tool/errorException';
+import stockService from "../../services/stockService";
+import {createStockDto} from "../../models/dto/stockDTO";
+import {CustomerDTO} from "../../models/dto/customerDTO";
+import customerSerivce from "../../services/customerSerivce";
 
 const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: Function) => {
-    const { taxiNumber, taxiId, sampleCode, isMale, age, time, score } = req.query;
+    const { taxiId, sampleCode, isMale, age, time, score } = req.query;
+    const customerDto: CustomerDTO = new CustomerDTO({
+        taxiId: taxiId as unknown as number,
+        sampleCode: sampleCode as unknown as number,
+        isMale: isMale as unknown as boolean,
+        age: age as unknown as number
+    });
 
-    const options: Record<string, unknown> = {}
     const sort: Record<string, unknown> = {}
-
-    if (isMale) options.isMale = isMale;
-    if (age) options.age    = age;
-    if (sampleCode) options.sampleCode = sampleCode
-    if (taxiNumber) options.taxiNumber = taxiNumber
-    if (taxiId) options.id = taxiId;
 
     if (time == 'asc' || time == 'desc') sort.time = time;
     if (score == 'asc' || score == 'desc') sort.score = score;
 
     try {
-        const result = await db.Customer.find(options).sort(sort);
-
+        const result = await customerSerivce.getCustomer(customerDto, sort);
         res.json(result);
     } catch (err) {
         next(err);
@@ -30,21 +29,12 @@ router.get('/', async (req: Request, res: Response, next: Function) => {
 });
 
 router.post('/', async (req: Request, res: Response, next: Function) => {
-    const { taxiNumber, sampleCode, isMale, age } = req.body;
-
-    if (!taxiNumber || !sampleCode || isMale === undefined || !age)
-        return sendErrorResponse(res, 400, 'invalid_form')
+    const customerDto: CustomerDTO = new CustomerDTO(req.body);
+    const stockDto: createStockDto = new createStockDto(req.body);
 
     try {
-        await db.Stock.useSample(+taxiNumber, +sampleCode);
-
-        // taxiNumber를 TaxiID로 수정하기
-        const item = await db.Customer.create({
-            taxiId: taxiNumber,
-            sampleCode,
-            isMale,
-            age
-        });
+        await stockService.useStock(stockDto);
+        const item = customerSerivce.createCustomer(customerDto);
 
         res.json(item);
     } catch (err) {
@@ -54,22 +44,10 @@ router.post('/', async (req: Request, res: Response, next: Function) => {
 
 router.post('/:customerId/evaluate', async (req: Request, res: Response, next: Function) => {
     const { customerId } = req.params;
-    const { score, review } = req.body;
-    const data: Record<string, unknown> = {};
-
-    if (score) data.score = score;
-    if (review) data.review = review;
+    const customerDto: CustomerDTO = new CustomerDTO(req.body);
 
     try {
-        const result = db.Customer.findOneAndUpdate({
-            id: customerId
-        }, data, {
-            new: true
-        });
-
-        if (!result)
-            throw new ReviewNotFoundError();
-
+        const result = await customerSerivce.evaluate(customerDto, +customerId);
         res.json(result);
     } catch (err) {
         next(err);
