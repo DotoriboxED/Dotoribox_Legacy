@@ -25,7 +25,7 @@ const Setting = styled.div`
     text-align: center;
 `
 
-const sampleEditPage = ({ match }) => {
+const App = ({ match }) => {
     const [taxi, setTaxi] = useState(null);
     const [update, setUpdate] = useState({})
     const history = useHistory();
@@ -62,7 +62,7 @@ const sampleEditPage = ({ match }) => {
                     <div>
                         <TextField fullWidth name="taxiNumber" label="택시 고유번호" defaultValue={taxi.taxiNumber} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="driverName" label="기사 이름" defaultValue={taxi.driver.name} onChange={handleValueChange} />
+                        <TextField fullWidth name="name" label="기사 이름" defaultValue={taxi.driver.name} onChange={handleValueChange} />
                         <Container />
                         <TextField fullWidth name="licensePlate" label="번호판" multiline defaultValue={taxi.driver.licensePlate} onChange={handleValueChange} />
                         <Container />
@@ -80,4 +80,4 @@ const sampleEditPage = ({ match }) => {
     )
 };
 
-export default sampleEditPage;
+export default App;

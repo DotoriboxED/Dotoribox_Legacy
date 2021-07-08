@@ -49,7 +49,7 @@ router.get('/', async (req: Request, res: Response, next: Function) => {
     const { isDeleted } = req.query;
 
     try {
-        const result = sampleService.getSample(isDeleted as unknown as boolean);
+        const result = await sampleService.getSampleAll(isDeleted as unknown as boolean);
         res.json(result);
     } catch (err) {
         next(err);
@@ -61,7 +61,7 @@ router.get('/:sampleId/image', async (req: Request, res: Response, next: Functio
 
     try {
         const result = await sampleService.getSampleImage(+sampleId);
-        res.download('./uploads/' + result.image);
+        res.download('./uploads/' + result);
     } catch (err) {
         next(err);
     }
@@ -80,7 +80,7 @@ router.get('/:sampleId', async (req: Request, res: Response, next: Function) => 
 
 router.put('/:sampleId', async (req: Request, res: Response, next: Function) => {
     const { sampleId } = req.params;
-    const sampleDto: SampleDTO = req.body;
+    const sampleDto: SampleDTO = new SampleDTO(req.body);
 
     try {
         const result = sampleService.updateSample(sampleDto, +sampleId);

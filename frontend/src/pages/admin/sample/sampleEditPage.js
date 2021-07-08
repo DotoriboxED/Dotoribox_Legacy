@@ -25,7 +25,7 @@ const Setting = styled.div`
     text-align: center;
 `
 
-const sampleEditPage = ({ match }) => {
+const App = ({ match }) => {
     const [sample, setSample] = useState(null);
     const [image, setImage] = useState(null);
     const history = useHistory();
@@ -34,6 +34,8 @@ const sampleEditPage = ({ match }) => {
     useEffect(() => {
         SampleApi.getInfo(sampleId).then((res) => {
             setSample(res.data);
+            console.log(res.data);
+            console.log(sample);
         });
     }, []);
 
@@ -77,25 +79,25 @@ const sampleEditPage = ({ match }) => {
                     sample &&
                     <div>
                         <Container />
-                        <TextField fullWidth name="sampleName" label="상품명" onChange={handleValueChange} />
+                        <TextField fullWidth name="sampleName" label="상품명" defaultValue={sample.sampleName} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="price" label="가격" onChange={handleValueChange} />
+                        <TextField fullWidth name="price" label="가격" defaultValue={sample.price} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="explain" label="설명" multiline onChange={handleValueChange} />
+                        <TextField fullWidth name="explain" label="설명" defaultValue={sample.explain} multiline onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="amount" label="재고" onChange={handleValueChange} />
+                        <TextField fullWidth name="amount" label="재고" defaultValue={sample.stock.amount} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="name" label="상품명(설명창)" onChange={handleValueChange} />
+                        <TextField fullWidth name="name" label="상품명(설명창)" defaultValue={sample.info.name} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="sampleType" label="샘플 종류" onChange={handleValueChange} />
+                        <TextField fullWidth name="sampleType" label="샘플 종류" defaultValue={sample.info.sampleType} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="manufacture" label="제조사" onChange={handleValueChange} />
+                        <TextField fullWidth name="manufacture" label="제조사" defaultValue={sample.info.manufacture} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="sale" label="판매처" onChange={handleValueChange} />
+                        <TextField fullWidth name="sale" label="판매처" defaultValue={sample.info.sale} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="consulting" label="소비자상담실" onChange={handleValueChange} />
+                        <TextField fullWidth name="consulting" label="소비자상담실" defaultValue={sample.info.consulting} onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="question" label="도토리박스 문의" onChange={handleValueChange} />
+                        <TextField fullWidth name="question" label="도토리박스 문의" defaultValue={sample.info.question} onChange={handleValueChange} />
                         <Container />
                         <Button variant="contained" type="submit" onClick={() => submitHandler()} fullWidth>제출</Button>
                     </div>
@@ -105,4 +107,4 @@ const sampleEditPage = ({ match }) => {
     )
 };
 
-export default sampleEditPage;
+export default App;

@@ -80,7 +80,7 @@ function App(props) {
     const location = useLocation();
 
     function saveinfo(code,sample,gender,age){
-        SampleApi.postInfo({ taxiNumber: code, sampleCode: sample,isMale: gender, age: age}).then((res) => {
+        SampleApi.postInfo({ taxiId: code, sampleId: sample,isMale: gender, age: age}).then((res) => {
             const { id } = res.data;
             history.push({pathname: "/review", state: { userCode: id }});
         }).catch((error) => {

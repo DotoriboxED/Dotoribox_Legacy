@@ -1,17 +1,17 @@
-import React,{useState} from 'react';
+import React, {useState} from 'react';
 import {useLocation} from 'react-router';
 import Card from '../components/Samplecard.js';
 import styled from 'styled-components';
-import { useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
-const main=styled.div`
+const main = styled.div`
   text-align: center;
   width: 90%;
   height: 8.063rem;
-  justify-content:center;
-  bottom: 0;  
+  justify-content: center;
+  bottom: 0;
 `
-const Button=styled.button`
+const Button = styled.button`
   width: 90%;
   height: 2rem;
   background-color: #e7713f;
@@ -23,23 +23,23 @@ const Button=styled.button`
   line-height: 1.46;
   letter-spacing: -0.07px;
   color: #ffffff;
-  border:none;
+  border: none;
 `
 
 function Sample() {
-  const location=useLocation();
-  const history = useHistory();
-  const Code=location.state.Code;
-  const [Sample, setSample] = useState(0);
+    const location = useLocation();
+    const history = useHistory();
+    const Code = location.state.Code;
+    const [Sample, setSample] = useState(0);
 
-  return (
-    <main>
-      {Code}
-      <Card></Card>
-      
-      
-    </main>
-  );
+    return (
+        <main>
+            {Code}
+            <Card></Card>
+
+
+        </main>
+    );
 }
 
 export default Sample;

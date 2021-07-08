@@ -47,7 +47,7 @@ const Button = styled.button`
   float: left;
 `
 
-const taxiInfoPage = ({ match }) => {
+const App = ({ match }) => {
     const [taxiInfo, setTaxiInfo] = useState({
         taxi: undefined,
         customer: undefined
@@ -91,11 +91,11 @@ const taxiInfoPage = ({ match }) => {
             }
             </ItemMenu>
             <ButtonWrapper>
-                <Button variant="contained" onClick={() => { history.push('/coffee/menu/taxi/' + taxiInfo.taxi.taxiNumber + '/edit') }}>편집</Button>
-                <Button variant="contained">샘플 관리</Button>
+                <Button variant="contained" onClick={() => { history.push('/coffee/menu/taxi/' + taxiInfo.taxi.id + '/edit') }}>편집</Button>
+                <Button variant="contained" onClick={() => { history.push('/coffee/menu/taxi/' + taxiInfo.taxi.id + '/sample') }}>샘플 관리</Button>
             </ButtonWrapper>
         </div>
     )
 }
 
-export default taxiInfoPage;
+export default App;

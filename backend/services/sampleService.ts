@@ -33,11 +33,11 @@ export default {
         return await db.Sample.create(sampleDto.getObject());
     },
 
-    async getSample (isDeleted: boolean) {
+    async getSampleAll (isDeleted: boolean) {
         if (!isDeleted)
             isDeleted = false;
 
-        return db.Sample.find({isDeleted});
+        return db.Sample.find({isDeleted}).lean();
     },
 
     async getSampleImage (sampleId: number) {

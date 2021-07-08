@@ -92,7 +92,8 @@ export class SampleDTO {
         const stock: Record<string, unknown> = {};
 
         Object.keys(this).map(key => {
-            if (this[key as keyof SampleDTO] !== undefined)
+            let value = this[key as keyof SampleDTO];
+            if (value !== undefined && typeof value !== 'object')
                 result[key] = this[key as keyof SampleDTO];
         });
 

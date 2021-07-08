@@ -1,12 +1,11 @@
 import db from '../models/index'
-import { createStockDto } from '../models/dto/stockDTO'
+import {createStockDto} from '../models/dto/stockDTO'
 import {
     SampleAlreadyExistError,
     SampleNotFoundError,
     TaxiNotFoundError,
     TaxiSampleNotFoundError
 } from "../tool/errorException";
-import {SampleDTO} from "../models/dto/sampleDTO";
 
 export default {
     async createStock (stockDto: createStockDto) {
@@ -18,7 +17,7 @@ export default {
         }, {
             '$push': {
                 samples: {
-                    stock: +result.id
+                    stockId: +result.id
                 }
             }
         });
@@ -28,10 +27,10 @@ export default {
     },
 
     async useStock (stockDto: createStockDto) {
-        const result = await db.Stock.findOneAndUpdate(stockDto, {
+        const result = await db.Stock.findOneAndUpdate(stockDto.getObject(), {
             $inc: {
-                'stock.amount': -1,
-                'stock.sales': 1
+                stock: -1,
+                sales: 1
             }
         });
 
@@ -56,9 +55,7 @@ export default {
             taxiId: stockDto.taxiId,
             sampleId: stockDto.sampleId,
             isDeleted: false
-        }, stockDto, {
-            new: true
-        });
+        }, stockDto.getObject());
 
         if (!result) throw new SampleNotFoundError();
         return result;
@@ -105,46 +102,57 @@ export default {
         return {Taxi, Sample};
     },
 
-    async getStock (taxiId: number) {
-        const result = await db.Taxi.aggregate([
-            {
+    async getStockAll (taxiId: number) {
+        const result = await db.Taxi.aggregate([{
                 $match: {
                     id: +taxiId,
                     isDeleted: false
                 }
-            },
-            {
+            }, {
                 $lookup: {
                     from: 'stocks',
                     localField: 'samples.stockId',
                     foreignField: 'id',
                     as: 'stocks'
                 }
-
-            }, {
-                $unwind: {
-                    path: '$stocks',
-                    preserveNullAndEmptyArrays: true
-                }
-            }, {
+            },
+            // {
+            //     $unwind: {
+            //         path: '$stocks',
+            //         preserveNullAndEmptyArrays: true
+            //     }
+            // },
+            {
                 $lookup: {
                     from: 'samples',
                     localField: 'stocks.sampleId',
                     foreignField: 'id',
-                    as: 'stocks.info'
+                    as: 'stocks'
                 }
             }, {
-                $unwind: {
-                    path: '$stocks.info',
-                }
-            }, {
-                $group: {
-                    _id: 0,
-                    stocks: {$push: '$stocks'}
+                $project: {
+                    stocks: '$stocks'
                 }
             }
+            // {
+            //     $unwind: {
+            //         path: '$stocks.info',
+            //     }
+            // }, {
+            //     $group: {
+            //         _id: 0,
+            //         stocks: {$push: '$stocks'}
+            //     }
+            // }
         ]);
 
         return result;
+    },
+
+    async getStock (stockDto: createStockDto) {
+        console.log(stockDto.getObject());
+        return db.Stock.findOne(
+            stockDto.getObject()
+        );
     }
 }

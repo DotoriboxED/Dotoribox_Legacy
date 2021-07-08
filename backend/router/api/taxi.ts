@@ -72,12 +72,23 @@ router.get('/:taxiId/stock', async (req: Request, res: Response, next: Function)
     const {taxiId} = req.params;
 
     try {
-        const result = await StockService.getStock(+taxiId);
+        const result = await StockService.getStockAll(+taxiId);
         res.json(result)
     } catch (err) {
         next(err);
     }
 });
+
+router.get('/:taxiId/sample/:sampleId', async (req: Request, res: Response, next: Function) => {
+    const stockDto: createStockDto = new createStockDto({...req.body, ...req.params});
+
+    try {
+        const result = await StockService.getStock(stockDto);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+})
 
 router.put('/:taxiId', async (req: Request, res: Response, next: Function) => {
     const {taxiId} = req.params;
@@ -100,7 +111,18 @@ router.put('/:taxiId/recover', async (req: Request, res: Response, next: Functio
     } catch (err) {
         next(err);
     }
-})
+});
+
+router.put('/:taxiId/sample/:sampleId', async (req: Request, res: Response, next: Function) => {
+    const stockDto: createStockDto = new createStockDto({...req.body, ...req.params});
+
+    try {
+        const result = await StockService.updateSample(stockDto);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
 
 router.delete('/:taxiId', async (req: Request, res: Response, next: Function) => {
     const {taxiId} = req.params;

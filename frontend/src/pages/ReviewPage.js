@@ -137,7 +137,7 @@ function Reviewpage(props) {
           ></Input>
         </InputBox>
         <br></br>
-        <Button onClick={() => { history.push('/'); ReviewApi.postReview({ review: Review, score: Rating }, userCode); }}>Enter</Button>
+        <Button onClick={() => { console.log(userCode); history.push('/'); ReviewApi.postReview({ review: Review, score: Rating }, userCode); }}>Enter</Button>
       </Upper>
       <Under >
       </Under>

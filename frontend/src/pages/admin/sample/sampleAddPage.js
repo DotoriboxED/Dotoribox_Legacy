@@ -25,7 +25,7 @@ const Setting = styled.div`
     text-align: center;
 `
 
-const sampleEditPage = ({ match }) => {
+const App = ({ match }) => {
     const [sample, setSample] = useState(null);
     const [image, setImage] = useState(null);
     const history = useHistory();
@@ -99,4 +99,4 @@ const sampleEditPage = ({ match }) => {
     )
 };
 
-export default sampleEditPage;
+export default App;

@@ -9,7 +9,7 @@ export default function (autoIncrement: any) {
             type: Number,
             required: true
         },
-        sampleCode: {
+        sampleId: {
             type: Number,
             required: true
         },

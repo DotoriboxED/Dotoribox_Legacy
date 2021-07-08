@@ -37,7 +37,7 @@ const Button = styled.button`
   float: left;
 `
 
-const taxiListPage = () => {
+const App = () => {
     const [taxi, setTaxi] = useState([]);
     const [check, setCheck] = useState({});
     const history = useHistory();
@@ -93,4 +93,4 @@ const taxiListPage = () => {
     )
 }
 
-export default taxiListPage;
+export default App;

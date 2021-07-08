@@ -1,6 +1,6 @@
 interface ICustomerDtoParam {
     taxiId?: number,
-    sampleCode?: number,
+    sampleId?: number,
     isMale?: boolean,
     age?: number,
     score?: number,
@@ -9,7 +9,7 @@ interface ICustomerDtoParam {
 
 export class CustomerDTO {
     public taxiId?: number;
-    public sampleCode?: number;
+    public sampleId?: number;
     public isMale?: boolean;
     public age?: number;
     public score?: number;
@@ -17,7 +17,7 @@ export class CustomerDTO {
 
     constructor(customerDtoParam: ICustomerDtoParam) {
         this.taxiId = customerDtoParam.taxiId;
-        this.sampleCode = customerDtoParam.sampleCode;
+        this.sampleId = customerDtoParam.sampleId;
         this.isMale = customerDtoParam.isMale;
         this.age = customerDtoParam.age;
         this.score = customerDtoParam.score;

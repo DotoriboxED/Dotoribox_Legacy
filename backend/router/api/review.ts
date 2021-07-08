@@ -10,7 +10,7 @@ router.get('/', async (req: Request, res: Response, next: Function) => {
     const { taxiId, sampleCode, isMale, age, time, score } = req.query;
     const customerDto: CustomerDTO = new CustomerDTO({
         taxiId: taxiId as unknown as number,
-        sampleCode: sampleCode as unknown as number,
+        sampleId: sampleCode as unknown as number,
         isMale: isMale as unknown as boolean,
         age: age as unknown as number
     });
@@ -34,10 +34,11 @@ router.post('/', async (req: Request, res: Response, next: Function) => {
 
     try {
         await stockService.useStock(stockDto);
-        const item = customerSerivce.createCustomer(customerDto);
+        const item = await customerSerivce.createCustomer(customerDto);
 
         res.json(item);
     } catch (err) {
+        console.log(err);
         next(err);
     }
 });

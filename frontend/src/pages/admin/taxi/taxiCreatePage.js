@@ -52,7 +52,7 @@ const Button = styled.button`
   float: left;
 `
 
-const sampleEditPage = ({ match }) => {
+const App = ({ match }) => {
     const [taxi, setTaxi] = useState({
         taxiNumber: undefined,
         driverName: undefined,
@@ -89,7 +89,7 @@ const sampleEditPage = ({ match }) => {
                     <form onSubmit={submitHandler} >
                         <TextField fullWidth name="taxiNumber" label="택시번호" onChange={handleValueChange} />
                         <Container />
-                        <TextField fullWidth name="driverName" label="기사명" onChange={handleValueChange} />
+                        <TextField fullWidth name="name" label="기사명" onChange={handleValueChange} />
                         <Container />
                         <TextField fullWidth name="phoneNumber" label="전화번호" onChange={handleValueChange} />
                         <Container />
@@ -107,4 +107,4 @@ const sampleEditPage = ({ match }) => {
     )
 };
 
-export default sampleEditPage;
+export default App;

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { List, ListItem, ListItemText, Checkbox } from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
+import {Checkbox, List, ListItem, ListItemText} from '@material-ui/core';
 import styled from 'styled-components';
 
 import Logo from '../../../Logo';
-import { TaxiApi, SampleApi } from '../../../api';
+import {TaxiApi} from '../../../api';
 
 
 const Body = styled.div`
@@ -17,6 +17,12 @@ const ButtonWrapper = styled.div`
     margin: 1rem;
     bottom: 0;
     align-items: center;
+`;
+
+const Setting = styled.div`
+    font-size: 2rem;
+    margin: 10px;
+    text-align: center;
 `;
 
 const Button = styled.button`
@@ -39,7 +45,7 @@ const Button = styled.button`
 `;
 
 const App = ({ match }) => {
-    const [taxiSample, setTaxiSample] = useState({ samples: [] });
+    const [taxiSample, setTaxiSample] = useState([]);
     const [check, setCheck] = useState({});
     const history = useHistory();
 
@@ -48,23 +54,20 @@ const App = ({ match }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const taxiInfo = await TaxiApi.getTaxiInfo(taxiId);
-                const samples = taxiInfo.data.samples.filter((elem) => {
-                    return elem.isDeleted !== true
+                const taxiInfo = await TaxiApi.getAllTaxiSample(taxiId);
+                taxiInfo.data[0].stocks = taxiInfo.data[0].stocks.filter((elem) => {
+                    return elem.isDeleted === false
                 });
 
-                taxiInfo.data.samples = samples;
-
-                console.log(taxiInfo.data);
-
-                setTaxiSample(taxiInfo.data);
+                setTaxiSample(taxiInfo.data[0].stocks);
+                console.log(taxiInfo.data[0].stocks);
             } catch (err) {
                 console.log(err);
             }
         }
 
-        fetch();
-    }, []);
+         fetch();
+    }, [check]);
 
     const onCheck = (event) => {
         setCheck({ ...check, [event.target.name]: event.target.checked });
@@ -73,7 +76,7 @@ const App = ({ match }) => {
 
     const onDelete = () => {
         const deleteTaxi = async () => {
-            let change = {}
+            let change = { }
             for (let key in check) {
                 if (check[key]) 
                     await TaxiApi.deleteTaxiSample(taxiId, key);
@@ -86,11 +89,18 @@ const App = ({ match }) => {
         deleteTaxi();
     }
 
-    const SampleList = (taxiSample.samples.map((elem) => {
+    const SampleList = (taxiSample.map((elem) => {
         return (
             <ListItem button>
-                <ListItemText primary={elem.sample.sampleName} />
-                <Checkbox name={elem.sample.id} onChange={onCheck} />
+                <ListItemText
+                    primary={elem.info.name}
+                    onClick={() => {
+                        history.push({
+                            pathname: '/coffee/menu/taxi/' + taxiId + '/sample/' + elem.id
+                        });
+                    }}
+                />
+                <Checkbox name={elem.info.id} onChange={onCheck} />
             </ListItem>
         )
     }));
@@ -99,16 +109,19 @@ const App = ({ match }) => {
         <div>
             <Logo/>
             <Body>
+                <Setting><b>샘플 관리</b></Setting>
+                <hr />
                 <List>
                     {SampleList}
                 </List>
                 <ButtonWrapper>
-                    <Button variant="contained" onClick={() => { history.push('/coffee/menu/taxi/' + taxiId + '/sample/create') }}>생성</Button>
+                    <Button variant="contained"
+                            onClick={() => { history.push('/coffee/menu/taxi/' + taxiId + '/sample/create') }}>생성</Button>
                     <Button variant="contained" onClick={() => onDelete()}>제거</Button>
                 </ButtonWrapper>
             </Body>
         </div>
     )
-};
+}
 
 export default App;
