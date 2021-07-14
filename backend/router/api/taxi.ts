@@ -42,9 +42,11 @@ router.post('/:taxiId/sample', async (req: Request, res: Response, next: Functio
 
 router.get('/', async (req: Request, res: Response, next: Function) => {
     const {isDeleted} = req.query;
+    const query: Record<string, unknown> = req.query;
+    delete query.isDeleted;
 
     try {
-        const result = await TaxiService.getTaxiAll(isDeleted as unknown as boolean);
+        const result = await TaxiService.getTaxiAll(isDeleted as unknown as boolean, query);
         res.json(result);
     } catch (err) {
         next(err);
@@ -72,7 +74,7 @@ router.get('/:taxiId/stock', async (req: Request, res: Response, next: Function)
     const {taxiId} = req.params;
 
     try {
-        const result = await StockService.getStockAll(+taxiId);
+        const result = await StockService.getStockAll(+taxiId, req.query);
         res.json(result)
     } catch (err) {
         next(err);
@@ -136,7 +138,7 @@ router.delete('/:taxiId', async (req: Request, res: Response, next: Function) =>
 });
 
 router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response, next: Function) => {
-    const stockDto: createStockDto = req.params as unknown as createStockDto;
+    const stockDto: createStockDto = new createStockDto(req.params);
 
     try {
         await taxiService.checkTaxi(+req.params.taxiId);
@@ -144,6 +146,7 @@ router.delete('/:taxiId/sample/:sampleId', async (req: Request, res: Response, n
 
         res.sendStatus(200);
     } catch (err) {
+        console.log(err);
         next(err);
     }
 })

@@ -8,6 +8,7 @@ const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: Function) => {
     const { taxiId, sampleCode, isMale, age, time, score } = req.query;
+
     const customerDto: CustomerDTO = new CustomerDTO({
         taxiId: taxiId as unknown as number,
         sampleId: sampleCode as unknown as number,
@@ -15,15 +16,11 @@ router.get('/', async (req: Request, res: Response, next: Function) => {
         age: age as unknown as number
     });
 
-    const sort: Record<string, unknown> = {}
-
-    if (time == 'asc' || time == 'desc') sort.time = time;
-    if (score == 'asc' || score == 'desc') sort.score = score;
-
     try {
-        const result = await customerSerivce.getCustomer(customerDto, sort);
+        const result = await customerSerivce.getCustomer(customerDto, req.query);
         res.json(result);
     } catch (err) {
+        console.log(err);
         next(err);
     }
 });

@@ -34,6 +34,8 @@ export default function (autoIncrement: any) {
             type: Boolean,
             default: false
         }
+    }, {
+        timestamps: true
     });
 
     const taxiSchema = new mongoose.Schema<ITaxiDocument>({
@@ -80,6 +82,8 @@ export default function (autoIncrement: any) {
                 type: Number
             }
         }]
+    }, {
+        timestamps: true
     });
 
     taxiSchema.plugin(autoIncrement.plugin, {

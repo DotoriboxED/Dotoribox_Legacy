@@ -9,7 +9,15 @@ import {
 
 export default {
     async createStock (stockDto: createStockDto) {
-        const result = await db.Stock.create(stockDto);
+        const duplicate = await db.Stock.findOne({
+            taxiId: stockDto.taxiId,
+            sampleId: stockDto.sampleId
+        });
+
+        if (duplicate)
+            throw new SampleAlreadyExistError();
+
+        const result = await db.Stock.create(stockDto.getObject());
 
         const check = await db.Taxi.findOneAndUpdate({
             id: stockDto.taxiId,
@@ -47,6 +55,18 @@ export default {
         });
 
         if (!update) throw new SampleNotFoundError();
+
+        const user = await db.Taxi.findOneAndUpdate({
+            id: stockDto.taxiId,
+            isDeleted: false
+        }, {
+            $inc: {
+                passenger: 1
+            }
+        });
+
+        if (!user) throw new TaxiNotFoundError();
+
         return update;
     },
 
@@ -62,8 +82,8 @@ export default {
     },
 
     async deleteStock (stockDto: createStockDto) {
-        const result = await db.Sample.findOneAndUpdate(
-            stockDto, {
+        const result = await db.Stock.findOneAndUpdate(
+            stockDto.getObject(), {
                 isDeleted: true
             }, {
                 new: true
@@ -102,55 +122,35 @@ export default {
         return {Taxi, Sample};
     },
 
-    async getStockAll (taxiId: number) {
-        const result = await db.Taxi.aggregate([{
-                $match: {
-                    id: +taxiId,
-                    isDeleted: false
-                }
-            }, {
-                $lookup: {
-                    from: 'stocks',
-                    localField: 'samples.stockId',
-                    foreignField: 'id',
-                    as: 'stocks'
-                }
-            },
-            // {
-            //     $unwind: {
-            //         path: '$stocks',
-            //         preserveNullAndEmptyArrays: true
-            //     }
-            // },
-            {
-                $lookup: {
-                    from: 'samples',
-                    localField: 'stocks.sampleId',
-                    foreignField: 'id',
-                    as: 'stocks'
-                }
-            }, {
-                $project: {
-                    stocks: '$stocks'
-                }
-            }
-            // {
-            //     $unwind: {
-            //         path: '$stocks.info',
-            //     }
-            // }, {
-            //     $group: {
-            //         _id: 0,
-            //         stocks: {$push: '$stocks'}
-            //     }
-            // }
-        ]);
+    async getStockAll (taxiId: number, query: Record<string, any>) {
+        const sort: Record<string, unknown> = {};
+        const sortType: {[index: string]:any} = { 'asc': 1, 'desc': -1 };
 
-        return result;
+        Object.keys(query).map(elem => {
+            if (query[elem] === 'asc' || query[elem] === 'desc')
+                sort[elem] = sortType[query[elem]]
+        });
+
+        sort.createdAt = -1;
+
+        console.log(sort);
+
+        return db.Stock.aggregate([{
+            $match: {
+                taxiId,
+                isDeleted: false
+            }
+        }, {
+            $lookup: {
+                from: 'samples',
+                localField: 'sampleId',
+                foreignField: 'id',
+                as: 'sample'
+            }
+        }]).sort(sort);
     },
 
     async getStock (stockDto: createStockDto) {
-        console.log(stockDto.getObject());
         return db.Stock.findOne(
             stockDto.getObject()
         );

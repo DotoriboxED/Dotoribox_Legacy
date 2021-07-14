@@ -42,14 +42,14 @@ router.post('/', async (req: Request, res: Response, next: Function) => {
     } catch (err) {
         next(err);
     }
-}
-)
+});
 
 router.get('/', async (req: Request, res: Response, next: Function) => {
     const { isDeleted } = req.query;
+    const query: Record<string, unknown> = req.query;
 
     try {
-        const result = await sampleService.getSampleAll(isDeleted as unknown as boolean);
+        const result = await sampleService.getSampleAll(isDeleted as unknown as boolean, query);
         res.json(result);
     } catch (err) {
         next(err);

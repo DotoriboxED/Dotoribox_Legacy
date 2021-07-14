@@ -70,8 +70,15 @@ function App() {
 
     function getProduct() {
         TaxiApi.getAllTaxiSample(Code).then((res) => {
-            console.log(res.data[0].stocks);
-            setProducts(res.data[0].stocks);
+            const data = res.data;
+            const result = [];
+
+            data.map(elem => {
+                result.push(...elem.sample)
+            });
+
+            if (res.data[0] !== undefined)
+                setProducts(result);
         });
 
     }

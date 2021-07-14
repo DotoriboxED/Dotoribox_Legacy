@@ -13,21 +13,23 @@ export class createStockDto {
     public sample?: mongoose.Schema.Types.ObjectId;
     public sampleId?: number;
     public stock?: number;
-    public isDeleted?: boolean;
+    public isDeleted?: boolean = false;
 
     constructor(stockDtoParameter: IStockDtoParameter) {
-        this.taxiId = stockDtoParameter.taxiId;
+        this.taxiId = parseInt(stockDtoParameter.taxiId as unknown as string);
         this.sample = stockDtoParameter.sample;
-        this.sampleId = stockDtoParameter.sampleId;
-        this.stock = stockDtoParameter.stock;
-        this.isDeleted = stockDtoParameter.isDeleted
+        this.sampleId = parseInt(stockDtoParameter.sampleId as unknown as string);
+        this.stock = parseInt(stockDtoParameter.stock as unknown as string);
+        this.isDeleted = stockDtoParameter.isDeleted;
     }
 
     getObject = () => {
         const result: Record<string, unknown> = {}
+
         Object.keys(this).map(key => {
-            if (this[key as keyof createStockDto] !== undefined)
-                result[key] = this[key as keyof createStockDto];
+            let elem = this[key as keyof createStockDto];
+            if (elem !== undefined && typeof elem !== 'function' && !isNaN(<number>elem))
+                result[key] = elem;
         });
 
         return result;

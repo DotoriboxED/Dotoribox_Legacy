@@ -45,7 +45,7 @@ const App = ({ match }) => {
         }
 
         fetch();
-    }, [check]);
+    }, []);
 
     const onCheck = (event) => {
         setCheck({
@@ -101,13 +101,12 @@ const App = ({ match }) => {
             TaxiApi.postTaxiSample(taxiId, { sampleId: key, stock: update[key].stock })
             .then((res) => {
                 console.log('success');
+                history.push('/coffee/menu/taxi/' + taxiId +'/sample');
             })
             .catch((err) => { 
                 console.log('err');
             });
         });
-
-        history.push('/coffee/menu/taxi/' + taxiId +'/sample');
     }
 
     return (

@@ -54,7 +54,7 @@ export class SampleDTO {
         }
 
         this.image = sampleDtoParam.image;
-        this.price = sampleDtoParam.price;
+        this.price = parseInt(sampleDtoParam.price as unknown as string);
         this.explain = sampleDtoParam.explain;
         this.sampleName = sampleDtoParam.sampleName;
 
@@ -69,12 +69,14 @@ export class SampleDTO {
         const info: Record<string, unknown> = {};
 
         Object.keys(this).map(key => {
-            if (this[key as keyof SampleDTO] !== undefined)
+            let elem = this[key as keyof SampleDTO];
+            if (elem !== undefined && !isNaN(<number>elem))
                 result[key] = this[key as keyof SampleDTO];
         });
 
         Object.keys(this.info).map(key => {
-            if (this.info[key] !== undefined)
+            let elem = this.info[key];
+            if (elem !== undefined && isNaN(<number>elem))
                 info[key] = this.info[key];
         });
 
@@ -93,12 +95,12 @@ export class SampleDTO {
 
         Object.keys(this).map(key => {
             let value = this[key as keyof SampleDTO];
-            if (value !== undefined && typeof value !== 'object')
+            if (value !== undefined && typeof value !== 'object' && !isNaN(<number>value))
                 result[key] = this[key as keyof SampleDTO];
         });
 
         Object.keys(this.info).map(key => {
-            if (this.info[key] !== undefined)
+            if (this.info[key] !== undefined && !isNaN(<number>this.info[key]))
                 info['info.' + key] = this.info[key];
         });
 

@@ -5,8 +5,8 @@ import LoginForm from '../../components/LoginForm';
 const App = () => {
     return (
         <div>
-            <Logo></Logo>
-            <LoginForm></LoginForm>
+            <Logo/>
+            <LoginForm/>
         </div>
     )
 }

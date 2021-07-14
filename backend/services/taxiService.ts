@@ -6,9 +6,6 @@ import sendErrorResponse from "../tool/error";
 
 export default {
     updateByTaxiId: async (taxiDto: TaxiDto, taxiId: number) => {
-
-        console.log(taxiDto.getUpdateObject())
-
         const result = await db.Taxi.findOneAndUpdate({
             id: taxiId,
             isDeleted: false
@@ -20,6 +17,7 @@ export default {
 
         return result
     },
+
     recoverDeletedTaxi: async (taxiId: number) => {
         const result = await db.Taxi.findOneAndUpdate({
             id: taxiId,
@@ -34,6 +32,7 @@ export default {
             throw new TaxiNotFoundError();
         return result;
     },
+
     createTaxi: async (taxiDto: TaxiDto) => {
         const check = await db.Taxi.findOne({
             taxiNumber: taxiDto.taxiNumber
@@ -44,6 +43,7 @@ export default {
 
         return await db.Taxi.create(taxiDto.getObject());
     },
+
     checkTaxi: async (taxiId: number) => {
         const result = await db.Taxi.findOne({
             id: taxiId,
@@ -54,6 +54,7 @@ export default {
             throw new TaxiNotFoundError();
         return result;
     },
+
     deleteTaxi: async (taxiId: number) => {
         const result: any = await db.Taxi.findOneAndUpdate({
             id: taxiId,
@@ -68,16 +69,18 @@ export default {
             throw new TaxiNotFoundError();
         return result;
     },
-    getTaxiAll: async (isDeleted: boolean) => {
+
+    getTaxiAll: async (isDeleted: boolean, query: Record<string, unknown>) => {
         if (!isDeleted)
             isDeleted = false;
 
         const result = await db.Taxi.find({
             isDeleted
-        });
+        }).sort(query).lean();
 
         return result
     },
+
     getTaxi: async (taxiId: number) => {
         const result = await db.Taxi.findOne({
             id: +taxiId,
@@ -88,6 +91,7 @@ export default {
             throw new TaxiNotFoundError();
         return result;
     },
+
     getTaxiByNumber: async (taxiNumber: number) => {
         const result = await db.Taxi.findOne({
             taxiNumber: +taxiNumber,

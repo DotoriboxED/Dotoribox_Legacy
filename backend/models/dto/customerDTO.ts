@@ -1,4 +1,4 @@
-interface ICustomerDtoParam {
+export interface ICustomerDtoParam {
     taxiId?: number,
     sampleId?: number,
     isMale?: boolean,
@@ -16,11 +16,11 @@ export class CustomerDTO {
     public review?: string;
 
     constructor(customerDtoParam: ICustomerDtoParam) {
-        this.taxiId = customerDtoParam.taxiId;
-        this.sampleId = customerDtoParam.sampleId;
-        this.isMale = customerDtoParam.isMale;
-        this.age = customerDtoParam.age;
-        this.score = customerDtoParam.score;
+        this.taxiId = parseInt(customerDtoParam.taxiId as unknown as string);
+        this.sampleId = parseInt(customerDtoParam.sampleId as unknown as string);
+        this.isMale = Boolean(customerDtoParam.isMale);
+        this.age = parseInt(customerDtoParam.age as unknown as string);
+        this.score = parseInt(customerDtoParam.score as unknown as string);
         this.review = customerDtoParam.review;
     }
 
@@ -28,9 +28,10 @@ export class CustomerDTO {
         const result: Record<string, unknown> = {}
 
         Object.keys(this).map(key => {
-            if (this[key as keyof CustomerDTO] !== undefined)
-                result[key] = this[key as keyof CustomerDTO];
-        })
+            let elem = this[key as keyof CustomerDTO];
+            if (elem !== undefined && !isNaN(<number>elem) && typeof elem !== 'function')
+                result[key] = this[key as keyof CustomerDTO] as typeof elem;
+        });
 
         return result;
     }

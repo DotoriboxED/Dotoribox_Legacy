@@ -4,7 +4,7 @@ import {Checkbox, List, ListItem, ListItemText} from '@material-ui/core';
 import styled from 'styled-components';
 
 import Logo from '../../../Logo';
-import {TaxiApi} from '../../../api';
+import {StockApi, TaxiApi} from '../../../api';
 
 
 const Body = styled.div`
@@ -51,56 +51,59 @@ const App = ({ match }) => {
 
     const { taxiId } = match.params;
 
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const taxiInfo = await TaxiApi.getAllTaxiSample(taxiId);
-                taxiInfo.data[0].stocks = taxiInfo.data[0].stocks.filter((elem) => {
-                    return elem.isDeleted === false
-                });
-
-                setTaxiSample(taxiInfo.data[0].stocks);
-                console.log(taxiInfo.data[0].stocks);
-            } catch (err) {
-                console.log(err);
-            }
+    const fetch = async () => {
+        try {
+            const taxiInfo = await StockApi.getStock(taxiId);
+            setTaxiSample(taxiInfo.data);
+        } catch (err) {
+            console.log(err);
         }
+    }
 
-         fetch();
+    useEffect(() => {
+         StockApi.getStock(taxiId).then((res) => {
+             setTaxiSample(res.data);
+         });
     }, [check]);
 
     const onCheck = (event) => {
         setCheck({ ...check, [event.target.name]: event.target.checked });
-        console.log(check);
     }
 
     const onDelete = () => {
         const deleteTaxi = async () => {
             let change = { }
             for (let key in check) {
-                if (check[key]) 
-                    await TaxiApi.deleteTaxiSample(taxiId, key);
-                else
-                    change[key] = check[key];
+                change = await TaxiApi.deleteTaxiSample(taxiId, key);
             }
-
             setCheck(change);
         }
-        deleteTaxi();
+
+        deleteTaxi().then(() => {
+            fetch().catch(err => {
+                console.log(err);
+            });
+        }).catch(err => {
+            console.log(err);
+
+        });
+
+        setCheck({});
     }
 
     const SampleList = (taxiSample.map((elem) => {
+        console.log('elkem');
         return (
             <ListItem button>
                 <ListItemText
-                    primary={elem.info.name}
+                    primary={elem.sample[0].info.name}
                     onClick={() => {
                         history.push({
                             pathname: '/coffee/menu/taxi/' + taxiId + '/sample/' + elem.id
                         });
                     }}
                 />
-                <Checkbox name={elem.info.id} onChange={onCheck} />
+                <Checkbox name={elem.sample[0].id} onChange={onCheck} />
             </ListItem>
         )
     }));

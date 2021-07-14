@@ -100,11 +100,9 @@ const Body=styled.div`
   margin: auto;
 `
 const Section=styled.div`
-  text-align: center;
   height:4rem;
   margin: auto;
   width:80%;
-  text-align:middle;
   text-align: center;
   vertical-align:middle;
 `

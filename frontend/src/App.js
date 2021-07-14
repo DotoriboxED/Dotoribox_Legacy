@@ -16,6 +16,9 @@ import TaxiEditpage from './pages/admin/taxi/taxiEditPage';
 import TaxiSampleListpage from './pages/admin/taxi/taxiSamplePage';
 import TaxiSampleAddpage from './pages/admin/taxi/taxiSampleListPage';
 import TaxiSampleEditpage from './pages/admin/taxi/taxiSampleEditPage';
+import TaxiStatMenu from './pages/admin/stat/statisticsMenu';
+import StatisticsTaxiPage from "./pages/admin/stat/statisticsTaxiPage";
+import StatisticsTaxiStockPage from './pages/admin/stat/statisticsTaxiStockPage'
 
 function App({location}) {
     return (
@@ -36,6 +39,9 @@ function App({location}) {
             <Route path='/coffee/menu/taxi/:taxiId/sample' component={TaxiSampleListpage} exact={true}/>
             <Route path='/coffee/menu/taxi/:taxiId/sample/create' component={TaxiSampleAddpage} exact={true}/>
             <Route path='/coffee/menu/taxi/:taxiId/sample/:sampleId' component={TaxiSampleEditpage} exact={true} />
+            <Route path='/coffee/menu/stat' component={TaxiStatMenu} exact={true} />
+            <Route path='/coffee/menu/stat/taxi' component={StatisticsTaxiPage} exact={true} />
+            <Route path='/coffee/menu/stat/taxi/:taxiId' component={StatisticsTaxiStockPage} exact={true} />
         </Switch>
     );
 }

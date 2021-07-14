@@ -56,7 +56,7 @@ const App = ({ match }) => {
     const [taxi, setTaxi] = useState({
         taxiNumber: undefined,
         driverName: undefined,
-        phoneNumver: undefined,
+        phoneNumber: undefined,
         accountNumber: undefined,
         licensePlate: undefined,
         group: undefined
@@ -86,7 +86,7 @@ const App = ({ match }) => {
                 <hr />
                 {
                     taxi &&
-                    <form onSubmit={submitHandler} >
+                    <div>
                         <TextField fullWidth name="taxiNumber" label="택시번호" onChange={handleValueChange} />
                         <Container />
                         <TextField fullWidth name="name" label="기사명" onChange={handleValueChange} />
@@ -99,12 +99,12 @@ const App = ({ match }) => {
                         <Container />
                         <TextField fullWidth name="group" label="군" onChange={handleValueChange} />
                         <Container />
-                        <Button variant="contained" type="submit" fullWidth>제출</Button>
-                    </form>
+                        <Button variant="contained" onClick={() => { submitHandler() }} fullWidth>제출</Button>
+                    </div>
                 }
             </Body>
         </div>
     )
-};
+}
 
 export default App;
