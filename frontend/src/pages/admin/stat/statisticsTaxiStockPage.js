@@ -83,7 +83,9 @@ const App = ({ match }) => {
                     <MenuItem value='recent'>샘플 판매 기록</MenuItem>
                     <MenuItem value='stock'>가장 많이 판매된 샘플</MenuItem>
                 </Select>
-                {DataBlock}
+                <List>
+                    {DataBlock}
+                </List>
             </ItemMenu>
         </div>
     )

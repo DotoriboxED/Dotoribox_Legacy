@@ -23,7 +23,7 @@ const App = () => {
                 <Setting><b>기록 및 통계</b></Setting>
                 <hr />
                 <Item title='택시' explain='택시 관련 통계를 봅니다.' path='/coffee/menu/stat/taxi' isUpper={false}/>
-                <Item title='샘플' explain='샘플 관련 통계를 봅니다.' path='/coffee/stat/sample' isUpper={false}/>
+                <Item title='샘플' explain='샘플 관련 통계를 봅니다.' path='/coffee/menu/stat/sample' isUpper={false}/>
             </ItemMenu>
         </div>
     )

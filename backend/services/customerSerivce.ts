@@ -15,6 +15,8 @@ export default {
 
         sort.createdAt = -1;
 
+        console.log(customerDto.getObject());
+
         return db.Customer.aggregate([{
             $match: customerDto.getObject()
         }, {
@@ -30,7 +32,7 @@ export default {
     },
 
     async createCustomer (customerDto: CustomerDTO) {
-        return await db.Customer.create(customerDto);
+        return await db.Customer.create(customerDto.getObject());
     },
 
     async evaluate (customerDto: CustomerDTO, customerId: number) {

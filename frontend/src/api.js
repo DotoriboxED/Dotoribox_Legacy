@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 export const SampleApi = {
-    taxiIsValid: (taxiId, query) => api.get(API_URL + "/api/taxi/" + taxiId + '?isTaxiCode=true', {}, {params: query}),
+    taxiIsValid: (taxiId, query) => api.get(API_URL + "/api/taxi/" + taxiId + '?isTaxiCode=true', {params: query}),
     getList: () => api.get(API_URL + "/api/sample"),//샘플 리스트 가져오기 page2
     getInfo: (id) => api.get(API_URL + "/api/sample/" + id),//선택된 샘플 정보 가져오기
     getInfoImage: (id) => api.get(API_URL + "/api/sample/" + id + "/image"),
@@ -17,12 +17,13 @@ export const SampleApi = {
     postSample: (body) => api.post(API_URL + "/api/sample/", body),
     putSample: (id, body) => api.put(API_URL + "/api/sample/" + id, body),
     putSampleImage: (id, formData, headers) => api.put(API_URL + "/api/sample/" + id + "/image", formData, headers),
-    deleteSample: (id) => api.delete(API_URL + "/api/sample/" + id)
+    deleteSample: (id) => api.delete(API_URL + "/api/sample/" + id),
 }
 
 export const ReviewApi = {
     getReview: (query) => api.get(API_URL + "/api/review", {params: query}),
-    postReview: (body, id) => api.post(API_URL + "/api/review/" + id + "/evaluate", body)//작성된 리뷰 디비에 저장
+    postReview: (body, id) => api.post(API_URL + "/api/review/" + id + "/evaluate", body),//작성된 리뷰 디비에 저장
+    getReviewStat: (id) => api.get(API_URL + '/api/sample/' + id + '/stat/customer')
 }
 
 export const TaxiApi = {

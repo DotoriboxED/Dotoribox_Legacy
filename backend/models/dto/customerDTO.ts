@@ -18,7 +18,7 @@ export class CustomerDTO {
     constructor(customerDtoParam: ICustomerDtoParam) {
         this.taxiId = parseInt(customerDtoParam.taxiId as unknown as string);
         this.sampleId = parseInt(customerDtoParam.sampleId as unknown as string);
-        this.isMale = Boolean(customerDtoParam.isMale);
+        this.isMale = customerDtoParam.isMale;
         this.age = parseInt(customerDtoParam.age as unknown as string);
         this.score = parseInt(customerDtoParam.score as unknown as string);
         this.review = customerDtoParam.review;

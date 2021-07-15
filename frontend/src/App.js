@@ -19,6 +19,8 @@ import TaxiSampleEditpage from './pages/admin/taxi/taxiSampleEditPage';
 import TaxiStatMenu from './pages/admin/stat/statisticsMenu';
 import StatisticsTaxiPage from "./pages/admin/stat/statisticsTaxiPage";
 import StatisticsTaxiStockPage from './pages/admin/stat/statisticsTaxiStockPage'
+import StatisticsSamplePage from './pages/admin/stat/statisticsSamplePage';
+import StatisticsSampleViewPage from './pages/admin/stat/statisticsSampleViewPage';
 
 function App({location}) {
     return (
@@ -38,10 +40,12 @@ function App({location}) {
             <Route path='/coffee/menu/taxi/:taxiId/edit' component={TaxiEditpage} exact={true}/>
             <Route path='/coffee/menu/taxi/:taxiId/sample' component={TaxiSampleListpage} exact={true}/>
             <Route path='/coffee/menu/taxi/:taxiId/sample/create' component={TaxiSampleAddpage} exact={true}/>
-            <Route path='/coffee/menu/taxi/:taxiId/sample/:sampleId' component={TaxiSampleEditpage} exact={true} />
-            <Route path='/coffee/menu/stat' component={TaxiStatMenu} exact={true} />
-            <Route path='/coffee/menu/stat/taxi' component={StatisticsTaxiPage} exact={true} />
-            <Route path='/coffee/menu/stat/taxi/:taxiId' component={StatisticsTaxiStockPage} exact={true} />
+            <Route path='/coffee/menu/taxi/:taxiId/sample/:sampleId' component={TaxiSampleEditpage} exact={true}/>
+            <Route path='/coffee/menu/stat' component={TaxiStatMenu} exact={true}/>
+            <Route path='/coffee/menu/stat/taxi' component={StatisticsTaxiPage} exact={true}/>
+            <Route path='/coffee/menu/stat/taxi/:taxiId' component={StatisticsTaxiStockPage} exact={true}/>
+            <Route path='/coffee/menu/stat/sample' component={StatisticsSamplePage} exact={true} />
+            <Route path='/coffee/menu/stat/sample/:sampleId' component={StatisticsSampleViewPage} exact={true} />
         </Switch>
     );
 }

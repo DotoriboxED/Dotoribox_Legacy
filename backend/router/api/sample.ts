@@ -7,6 +7,7 @@ import { unlink } from 'fs/promises';
 import { InvalidFormError, NotDeletedError, SampleNotFoundError } from '../../tool/errorException';
 import {SampleDTO} from "../../models/dto/sampleDTO";
 import sampleService from "../../services/sampleService";
+import statisticsService from "../../services/statisticsService";
 
 const router = Router();
 
@@ -72,6 +73,17 @@ router.get('/:sampleId', async (req: Request, res: Response, next: Function) => 
 
     try {
         const result = await sampleService.findSample(+sampleId);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/:sampleId/stat/customer', async (req: Request, res: Response, next: Function) => {
+    const { sampleId } = req.params;
+
+    try {
+        const result = await statisticsService.mostCommonCustomer(+sampleId);
         res.json(result);
     } catch (err) {
         next(err);
