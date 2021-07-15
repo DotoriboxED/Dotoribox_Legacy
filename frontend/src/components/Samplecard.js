@@ -86,7 +86,7 @@ const ImageForm = styled.div`
 `
 const Card = (props) => {
     const {setSelect, select, id, amount} = props;
-    const [soldOut, setSoldOut] = useState(false);
+    const [soldOut, setSoldOut] = useState(true);
 
     useEffect(() => {
         changeSelect(props.select)
@@ -121,13 +121,12 @@ const Card = (props) => {
                     if (amount > 0)
                         setSelect(props.id);
                     else
-                        setSoldOut(true);
+                        setSoldOut(false);
                 }}><b>지금 가져가기</b></Button>
                 <Info/>
             </Bottom>
-            {
-                soldOut && <WarningPopup isValid={soldOut} setValid={setSoldOut()} message={<div>매진된 상품입니다.</div>}/>
-            }
+            <WarningPopup isValid={soldOut} setValid={setSoldOut} message={
+                <div>매진된 상품입니다.<br/>아쉽지만 다른 샘플을 골라 주세요!</div>}/>
         </Each>
     );
 }
