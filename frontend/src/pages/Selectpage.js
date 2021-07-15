@@ -29,11 +29,16 @@ const Button = styled.button`
 const Main = styled.div`
   text-align: center;
   background-image: url(${Background});
-  height: 100vh;
+  height: 100%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 `
 
 const List = styled.div`
   margin-top: 1em;
+  padding-bottom: 4.5rem;
 `
 
 function App() {
@@ -77,6 +82,8 @@ function App() {
                 result.push(...elem.sample)
             });
 
+            console.log(result);
+
             if (res.data[0] !== undefined)
                 setProducts(result);
         });
@@ -84,11 +91,11 @@ function App() {
     }
 
     const renderLists = (Products.map((product, index) => {
-
         return <Sample image={Images[index]}
                        name={product.sampleName}
                        price={product.price}
                        info={product.explain}
+                       amount={product.stock.amount}
                        select={Select}
                        setSelect={setSelect}
                        id={product.id}

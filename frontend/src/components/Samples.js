@@ -28,15 +28,12 @@ const Button = styled.button`
 
 function Sample() {
     const location = useLocation();
-    const history = useHistory();
     const Code = location.state.Code;
-    const [Sample, setSample] = useState(0);
 
     return (
         <main>
             {Code}
-            <Card></Card>
-
+            <Card/>
 
         </main>
     );
