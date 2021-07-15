@@ -29,6 +29,7 @@ export class CustomerDTO {
 
         Object.keys(this).map(key => {
             let elem = this[key as keyof CustomerDTO];
+            if (typeof elem === 'number' && isNaN(elem)) {}
             if (elem !== undefined && !isNaN(<number>elem) && typeof elem !== 'function')
                 result[key] = this[key as keyof CustomerDTO] as typeof elem;
         });

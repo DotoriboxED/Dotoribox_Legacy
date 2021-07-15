@@ -70,13 +70,15 @@ export class SampleDTO {
 
         Object.keys(this).map(key => {
             let elem = this[key as keyof SampleDTO];
-            if (elem !== undefined && !isNaN(<number>elem))
+            if (typeof elem === 'number' && isNaN(elem)) {}
+            else if (elem !== undefined)
                 result[key] = this[key as keyof SampleDTO];
         });
 
         Object.keys(this.info).map(key => {
             let elem = this.info[key];
-            if (elem !== undefined && isNaN(<number>elem))
+            if (typeof elem === 'number' && isNaN(elem)) {}
+            else if (elem !== undefined)
                 info[key] = this.info[key];
         });
 
@@ -95,12 +97,15 @@ export class SampleDTO {
 
         Object.keys(this).map(key => {
             let value = this[key as keyof SampleDTO];
-            if (value !== undefined && typeof value !== 'object' && !isNaN(<number>value))
+
+            if (typeof value === 'number' && isNaN(value)) {}
+            else if (value !== undefined && typeof value !== 'object')
                 result[key] = this[key as keyof SampleDTO];
         });
 
         Object.keys(this.info).map(key => {
-            if (this.info[key] !== undefined && !isNaN(<number>this.info[key]))
+            if (typeof this.info[key] === 'number' && isNaN(this.info[key])) {}
+            else if (this.info[key] !== undefined)
                 info['info.' + key] = this.info[key];
         });
 

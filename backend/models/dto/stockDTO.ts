@@ -28,7 +28,8 @@ export class createStockDto {
 
         Object.keys(this).map(key => {
             let elem = this[key as keyof createStockDto];
-            if (elem !== undefined && typeof elem !== 'function' && !isNaN(<number>elem))
+            if (typeof elem === 'number' && isNaN(elem)) {}
+            else if (elem !== undefined && typeof elem !== 'function' && !isNaN(<number>elem))
                 result[key] = elem;
         });
 
