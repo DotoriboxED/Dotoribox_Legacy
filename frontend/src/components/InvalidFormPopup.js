@@ -31,8 +31,7 @@ const Background = styled.div`
 
 const Popup = styled.div`
     width: 335px;
-    height: 260px;
-    background-color: white;
+    height: auto;
     position: relative;
     box-sizing: border-box;
     margin: 30px auto;

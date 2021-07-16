@@ -61,10 +61,18 @@ const Bottom = styled.div`
   display: flex;
 
 `
-const Info = styled.div`
+const Info = styled.button`
   width: 20%;
   background-color: white;
   height: 2.5rem;
+  font-size: 0.8rem;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  border: none;
+  line-height: 1.55;
+  letter-spacing: -0.06px;
+  text-align: center;
 `
 const Image = styled.img`
   height: 11.3rem;
@@ -85,8 +93,9 @@ const ImageForm = styled.div`
   overflow: hidden;
 `
 const Card = (props) => {
-    const {setSelect, select, id, amount} = props;
-    const [soldOut, setSoldOut] = useState(true);
+    const {setSelect, select, id, amount, sampleInfo} = props;
+    const [sampleExists, setSampleExists] = useState(true);
+    const [infoState, setInfoState] = useState(true);
 
     useEffect(() => {
         changeSelect(props.select)
@@ -121,12 +130,26 @@ const Card = (props) => {
                     if (amount > 0)
                         setSelect(props.id);
                     else
-                        setSoldOut(false);
+                        setSampleExists(false);
                 }}><b>지금 가져가기</b></Button>
-                <Info/>
+                <Info onClick={() => {
+                    console.log(infoState);
+                    setInfoState(false);
+                }}>정보</Info>
             </Bottom>
-            <WarningPopup isValid={soldOut} setValid={setSoldOut} message={
+            <WarningPopup isValid={sampleExists} setValid={setSampleExists} message={
                 <div>매진된 상품입니다.<br/>아쉽지만 다른 샘플을 골라 주세요!</div>}/>
+            <WarningPopup isValid={infoState} setValid={setInfoState}
+                          message={
+                              <div>
+                                  <div>이름 : {sampleInfo.name}</div>
+                                  <div>종류 : {sampleInfo.sampleType}</div>
+                                  <div>제조사 : {sampleInfo.manufacture}</div>
+                                  <div>판매처 : {sampleInfo.sale}</div>
+                                  <div>고객상담 : {sampleInfo.consulting}</div>
+                                  <div>질문 : {sampleInfo.question}</div>
+                              </div>
+                          }/>
         </Each>
     );
 }

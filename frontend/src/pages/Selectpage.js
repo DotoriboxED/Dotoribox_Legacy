@@ -99,6 +99,7 @@ function App() {
                        select={Select}
                        setSelect={setSelect}
                        id={product.id}
+                       sampleInfo={product.info}
         />
     }));
 
