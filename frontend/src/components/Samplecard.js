@@ -4,7 +4,6 @@ import {API_URL} from '../api';
 import WarningPopup from "./InvalidFormPopup";
 
 const Each = styled.div`
-  text-align: center;
   margin: 1em 1em 0 1em;
   width: 90%;
   height: 16.1rem;
@@ -12,7 +11,6 @@ const Each = styled.div`
   bottom: 0;
   border: 0.2rem solid;
   background-color: white;
-
 `
 const Name = styled.div`
   font-family: SpoqaHanSansNeo;
@@ -35,7 +33,6 @@ const Price = styled.div`
   letter-spacing: -0.05px;
   color: #0035ff;
   margin: auto;
-
 `
 
 const Button = styled.button`
@@ -54,12 +51,10 @@ const Button = styled.button`
   color: #ffffff;
   border: none;
   vertical-align: bottom;
-
 `
 const Bottom = styled.div`
   width: 100%;
   display: flex;
-
 `
 const Info = styled.button`
   width: 20%;
@@ -92,6 +87,15 @@ const ImageForm = styled.div`
   margin: auto;
   overflow: hidden;
 `
+
+const Filter = styled.div`
+    background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  width: 90%;
+  height: 16.1rem;
+  position: absolute;
+`
+
 const Card = (props) => {
     const {setSelect, select, id, amount, sampleInfo} = props;
     const [sampleExists, setSampleExists] = useState(true);
@@ -115,42 +119,49 @@ const Card = (props) => {
     }
 
     return (
-        <Each style={{borderColor: background}}>
-            <ImageForm>
-                {
-                    amount > 0 ? <Image src={API_URL + '/api/sample/' + props.id + '/image'}/>
-                        : <SoldOutImage src={API_URL + '/api/sample/' + props.id + '/image'}/>
-                }
+        <div style={{'text-align': 'center'}}>
 
-            </ImageForm>
-            <Name>{props.name}</Name>
-            <Price>{props.price}원</Price>
-            <Bottom>
-                <Button style={{backgroundColor: background}} onClick={() => {
-                    if (amount > 0)
-                        setSelect(props.id);
-                    else
-                        setSampleExists(false);
-                }}><b>지금 가져가기</b></Button>
-                <Info onClick={() => {
-                    console.log(infoState);
-                    setInfoState(false);
-                }}>정보</Info>
-            </Bottom>
-            <WarningPopup isValid={sampleExists} setValid={setSampleExists} message={
-                <div>매진된 상품입니다.<br/>아쉽지만 다른 샘플을 골라 주세요!</div>}/>
-            <WarningPopup isValid={infoState} setValid={setInfoState}
-                          message={
-                              <div>
-                                  <div>이름 : {sampleInfo.name}</div>
-                                  <div>종류 : {sampleInfo.sampleType}</div>
-                                  <div>제조사 : {sampleInfo.manufacture}</div>
-                                  <div>판매처 : {sampleInfo.sale}</div>
-                                  <div>고객상담 : {sampleInfo.consulting}</div>
-                                  <div>질문 : {sampleInfo.question}</div>
-                              </div>
-                          }/>
-        </Each>
+            <Each style={{borderColor: background}}>
+                {
+                    amount < 1 && <Filter />
+                }
+                <ImageForm>
+                    {
+                        amount > 0 ? <Image src={API_URL + '/api/sample/' + props.id + '/image'}/>
+                            : <SoldOutImage src={API_URL + '/api/sample/' + props.id + '/image'}/>
+                    }
+
+                </ImageForm>
+                <Name>{props.name}</Name>
+                <Price>{props.price}원</Price>
+                <Bottom>
+                    <Button style={{backgroundColor: background}} onClick={() => {
+                        if (amount > 0)
+                            setSelect(props.id);
+                        else
+                            setSampleExists(false);
+                    }}><b>지금 가져가기</b></Button>
+                    <Info onClick={() => {
+                        console.log(infoState);
+                        setInfoState(false);
+                    }}>정보</Info>
+                </Bottom>
+                <WarningPopup isValid={sampleExists} setValid={setSampleExists} message={
+                    <div>매진된 상품입니다.<br/>아쉽지만 다른 샘플을 골라 주세요!</div>}/>
+                <WarningPopup isValid={infoState} setValid={setInfoState}
+                              message={
+                                  <div>
+                                      <div>이름 : {sampleInfo.name}</div>
+                                      <div>종류 : {sampleInfo.sampleType}</div>
+                                      <div>제조사 : {sampleInfo.manufacture}</div>
+                                      <div>판매처 : {sampleInfo.sale}</div>
+                                      <div>고객상담 : {sampleInfo.consulting}</div>
+                                      <div>질문 : {sampleInfo.question}</div>
+                                  </div>
+                              }/>
+
+            </Each>
+        </div>
     );
 }
 

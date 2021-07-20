@@ -8,7 +8,7 @@ import Item from '../../../components/menu/SampleBlock';
 import Logo from '../../../Logo';
 
 const Body = styled.div`
-    margin: 10px;
+    margin: 20px;
 `
 const ButtonWrapper = styled.div`
     position: fixed;
@@ -35,6 +35,12 @@ const Button = styled.button`
   bottom:0;
   margin: 0.3rem;
   float: left;
+`
+
+const Setting = styled.div`
+    font-size: 2rem;
+    margin: 10px;
+    text-align: center;
 `
 
 const App = () => {
@@ -81,6 +87,8 @@ const App = () => {
         <div>
             <Logo />
             <Body>
+                <Setting><b>택시 목록</b></Setting>
+                <hr />
                 <List component="nav">
                     {TaxiList}
                 </List>

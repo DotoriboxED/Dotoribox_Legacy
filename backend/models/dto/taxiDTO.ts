@@ -34,7 +34,7 @@ export class TaxiDto {
             licensePlate: obj.licensePlate,
             group: obj.group,
             name: obj.name,
-            phoneNumber: parseInt(obj.phoneNumber as unknown as string),
+            phoneNumber: obj.phoneNumber,
         }
 
         Object.keys(this.driver).map(key => {
@@ -58,14 +58,16 @@ export class TaxiDto {
     }
 
     getUpdateObject() {
+        const update: Record<string, any> = {}
         const driver: Record<string, any> = {}
         Object.keys(this.driver).map(key => {
             driver['driver.' + key] = this.driver[key]
         })
 
-        return {
-            taxiNumber: this.taxiNumber,
-            $set: driver
-        };
+        update.driver = driver;
+
+        if (this.taxiNumber !== undefined && !isNaN(<number>this.taxiNumber))
+            update.taxiNumber = this.taxiNumber;
+        return update;
     }
 }
