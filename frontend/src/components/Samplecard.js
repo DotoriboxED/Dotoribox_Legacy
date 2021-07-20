@@ -76,7 +76,7 @@ const Image = styled.img`
 
 const SoldOutImage = styled.img`
   height: 11.3rem;
-  -webkit-filter: grayscale(100%);
+  -webkit-filter: grayscale(100%) brightness(40%);
   overflow: hidden;
 `;
 
@@ -89,8 +89,7 @@ const ImageForm = styled.div`
 `
 
 const Filter = styled.div`
-    background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.6);
   width: 90%;
   height: 16.1rem;
   position: absolute;
@@ -119,49 +118,46 @@ const Card = (props) => {
     }
 
     return (
-        <div style={{'text-align': 'center'}}>
-
-            <Each style={{borderColor: background}}>
+        <Each style={{borderColor: background}}>
+            {
+                amount < 1 && <Filter/>
+            }
+            <ImageForm>
                 {
-                    amount < 1 && <Filter />
+                    amount > 0 ? <Image src={API_URL + '/api/sample/' + props.id + '/image'}/>
+                        : <SoldOutImage src={API_URL + '/api/sample/' + props.id + '/image'}/>
                 }
-                <ImageForm>
-                    {
-                        amount > 0 ? <Image src={API_URL + '/api/sample/' + props.id + '/image'}/>
-                            : <SoldOutImage src={API_URL + '/api/sample/' + props.id + '/image'}/>
-                    }
 
-                </ImageForm>
-                <Name>{props.name}</Name>
-                <Price>{props.price}원</Price>
-                <Bottom>
-                    <Button style={{backgroundColor: background}} onClick={() => {
-                        if (amount > 0)
-                            setSelect(props.id);
-                        else
-                            setSampleExists(false);
-                    }}><b>지금 가져가기</b></Button>
-                    <Info onClick={() => {
-                        console.log(infoState);
-                        setInfoState(false);
-                    }}>정보</Info>
-                </Bottom>
-                <WarningPopup isValid={sampleExists} setValid={setSampleExists} message={
-                    <div>매진된 상품입니다.<br/>아쉽지만 다른 샘플을 골라 주세요!</div>}/>
-                <WarningPopup isValid={infoState} setValid={setInfoState}
-                              message={
-                                  <div>
-                                      <div>이름 : {sampleInfo.name}</div>
-                                      <div>종류 : {sampleInfo.sampleType}</div>
-                                      <div>제조사 : {sampleInfo.manufacture}</div>
-                                      <div>판매처 : {sampleInfo.sale}</div>
-                                      <div>고객상담 : {sampleInfo.consulting}</div>
-                                      <div>질문 : {sampleInfo.question}</div>
-                                  </div>
-                              }/>
+            </ImageForm>
+            <Name>{props.name}</Name>
+            <Price>{props.price}원</Price>
+            <Bottom>
+                <Button style={{backgroundColor: background}} onClick={() => {
+                    if (amount > 0)
+                        setSelect(props.id);
+                    else
+                        setSampleExists(false);
+                }}><b>지금 가져가기</b></Button>
+                <Info onClick={() => {
+                    console.log(infoState);
+                    setInfoState(false);
+                }}>정보</Info>
+            </Bottom>
+            <WarningPopup isValid={sampleExists} setValid={setSampleExists} message={
+                <div>매진된 상품입니다.<br/>아쉽지만 다른 샘플을 골라 주세요!</div>}/>
+            <WarningPopup isValid={infoState} setValid={setInfoState}
+                          message={
+                              <div>
+                                  <div>이름 : {sampleInfo.name}</div>
+                                  <div>종류 : {sampleInfo.sampleType}</div>
+                                  <div>제조사 : {sampleInfo.manufacture}</div>
+                                  <div>판매처 : {sampleInfo.sale}</div>
+                                  <div>고객상담 : {sampleInfo.consulting}</div>
+                                  <div>질문 : {sampleInfo.question}</div>
+                              </div>
+                          }/>
 
-            </Each>
-        </div>
+        </Each>
     );
 }
 
