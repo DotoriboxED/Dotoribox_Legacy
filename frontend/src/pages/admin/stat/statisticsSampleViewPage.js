@@ -5,6 +5,7 @@ import Logo from "../../../Logo";
 import styled from "styled-components";
 import {useLocation} from "react-router-dom";
 import MenuTitle from "../../../components/menu/MenuTitle";
+import Graph from "../../../components/Graph";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -47,11 +48,25 @@ const App = ({ match }) => {
         )
     }));
 
+    const graphData = people.map(elem => {
+        let gender;
+        if (elem._id.isMale) gender = '남성';
+        else gender = '여성';
+
+        const title = elem._id.age + '대 ' + gender
+        return {
+            id: title,
+            label: title,
+            value: elem.count
+        }
+    });
+
     return (
         <div>
             <Logo />
             <ItemMenu>
                 <MenuTitle Title={sampleName} showBack={true} />
+                <Graph data={graphData} />
                 <List>
                     {PeopleBlock}
                 </List>

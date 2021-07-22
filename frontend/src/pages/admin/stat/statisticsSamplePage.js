@@ -5,6 +5,7 @@ import {SampleApi} from "../../../api";
 import {ListItem, ListItemText, List} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import MenuTitle from "../../../components/menu/MenuTitle";
+import Graph from '../../../components/Graph';
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -12,20 +13,23 @@ const ItemMenu = styled.div`
     margin: 10px;
 `;
 
-const Setting = styled.div`
-    font-size: 2rem;
-    margin: 10px;
-    text-align: center;
-`;
-// 성별 나이 통계
-// 고유번호 통계
-
 const App = () => {
     const [sample, setSample] = useState([]);
+    const [graphData, setGraphData] = useState([]);
 
     useEffect(() => {
         SampleApi.getList().then(res => {
             setSample(res.data);
+
+            const data = res.data.map(elem => {
+                return {
+                    id: elem.sampleName,
+                    label: elem.sampleName,
+                    value: elem.stock.sales
+                }
+            });
+
+            setGraphData(data);
         });
     }, []);
 
@@ -36,6 +40,7 @@ const App = () => {
             <ListItem Button>
                 <ListItemText
                     primary={elem.sampleName}
+                    secondary={elem.stock.sales + '개 판매됨'}
                     onClick={() => { history.push('/coffee/menu/stat/sample/' + elem.id,
                         { sampleName: elem.sampleName }) }}
                 />
@@ -48,6 +53,7 @@ const App = () => {
             <Logo />
             <ItemMenu>
                 <MenuTitle Title="샘플 통계" showBack={true} />
+                <Graph data={graphData} />
                 <List>
                     {Samples}
                 </List>

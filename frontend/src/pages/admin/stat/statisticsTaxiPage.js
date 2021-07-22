@@ -5,18 +5,13 @@ import {TaxiApi} from "../../../api";
 import {ListItem, ListItemText, List, Select, MenuItem} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import MenuTitle from "../../../components/menu/MenuTitle";
+import Graph from "../../../components/Graph";
 
 const ItemMenu = styled.div`
     flex: 1;
     overflow-y: auto;
     margin: 10px;
-`
-
-const Setting = styled.div`
-    font-size: 2rem;
-    margin: 10px;
-    text-align: center;
-`
+`;
 
 const App = () => {
     const [taxi, setTaxi] = useState([]);
@@ -53,6 +48,14 @@ const App = () => {
         )
     });
 
+    const graphData = taxi.map(elem => {
+        return {
+            id: elem.taxiNumber,
+            label: elem.taxiNumber,
+            value: elem.passenger
+        }
+    })
+
     const handleChange = (e) => {
         setSort(e.target.value)
     }
@@ -62,6 +65,7 @@ const App = () => {
             <Logo />
             <ItemMenu>
                 <MenuTitle Title="택시 통계" showBack={true} />
+                <Graph data={graphData} />
                 <Select
                     labelId="demo-simple-select-label"
                     id='demo-simple-select'

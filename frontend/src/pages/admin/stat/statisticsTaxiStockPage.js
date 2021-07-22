@@ -5,6 +5,7 @@ import {ReviewApi, StockApi, TaxiApi} from "../../../api";
 import {useLocation} from "react-router-dom";
 import {Select, MenuItem, ListItem, ListItemText, List} from "@material-ui/core";
 import MenuTitle from "../../../components/menu/MenuTitle";
+import Graph from "../../../components/Graph";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -68,11 +69,20 @@ const App = ({ match }) => {
         )
     }));
 
+    const graphData = data.stock.map(elem => {
+        return {
+            id: elem.sample[0].sampleName,
+            label: elem.sample[0].sampleName,
+            value: elem.sales
+        }
+    });
+
     return (
         <div>
             <Logo />
             <ItemMenu>
                 <MenuTitle Title="택시 샘플 통계" showBack={true} />
+                <Graph data={graphData} />
                 <Select
                     labelId="demo-simple-select-label"
                     id='menuSelector'
