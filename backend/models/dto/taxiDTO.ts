@@ -58,13 +58,16 @@ export class TaxiDto {
     }
 
     getUpdateObject() {
-        const update: Record<string, any> = {}
+        let update: Record<string, any> = {};
         const driver: Record<string, any> = {}
         Object.keys(this.driver).map(key => {
             driver['driver.' + key] = this.driver[key]
-        })
+        });
 
-        update.driver = driver;
+        if (this.driver !== {})
+            update = {
+                $set: driver
+            }
 
         if (this.taxiNumber !== undefined && !isNaN(<number>this.taxiNumber))
             update.taxiNumber = this.taxiNumber;

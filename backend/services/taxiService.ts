@@ -6,6 +6,8 @@ import sendErrorResponse from "../tool/error";
 
 export default {
     updateByTaxiId: async (taxiDto: TaxiDto, taxiId: number) => {
+        console.log(taxiDto.getUpdateObject());
+
         const result = await db.Taxi.findOneAndUpdate({
             id: taxiId,
             isDeleted: false
@@ -15,7 +17,7 @@ export default {
         if (!result)
             throw new TaxiNotFoundError();
 
-        return result
+        return result;
     },
 
     recoverDeletedTaxi: async (taxiId: number) => {

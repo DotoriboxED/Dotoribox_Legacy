@@ -100,6 +100,7 @@ router.put('/:taxiId', async (req: Request, res: Response, next: Function) => {
         const result = await TaxiService.updateByTaxiId(taxiDto, +taxiId);
         res.json(result);
     } catch (err) {
+        console.log(err);
         next(err);
     }
 });
