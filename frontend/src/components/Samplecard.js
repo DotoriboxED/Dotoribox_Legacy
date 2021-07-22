@@ -99,22 +99,22 @@ const Card = (props) => {
     const {setSelect, select, id, amount, sampleInfo} = props;
     const [sampleExists, setSampleExists] = useState(true);
     const [infoState, setInfoState] = useState(true);
+    const [background, setBackground] = useState("#2e2e2e");
 
     useEffect(() => {
         changeSelect(props.select)
     }, [])
 
     useEffect(() => {
-        if (select === props.id) setbackground('#e7713f');
-        else setbackground('#2e2e2e')
+        if (select === props.id) setBackground('#e7713f');
+        else setBackground('#2e2e2e')
     }, [select])
-    const [background, setbackground] = useState("#2e2e2e");
 
     function changeSelect(select) {
         if (select === props.id)
-            setbackground("#e7713f");
+            setBackground("#e7713f");
         else
-            setbackground("#2e2e2e");
+            setBackground("#2e2e2e");
     }
 
     return (
@@ -156,7 +156,6 @@ const Card = (props) => {
                                   <div>질문 : {sampleInfo.question}</div>
                               </div>
                           }/>
-
         </Each>
     );
 }

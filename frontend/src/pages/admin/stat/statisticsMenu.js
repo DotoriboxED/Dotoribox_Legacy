@@ -2,6 +2,7 @@ import React from 'react';
 import Logo from "../../../Logo";
 import Item from '../../../components/menu/MenuBlock'
 import styled from "styled-components";
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -20,8 +21,7 @@ const App = () => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>기록 및 통계</b></Setting>
-                <hr />
+                <MenuTitle Title="기록 및 통계" showBack={true} />
                 <Item title='택시' explain='택시 관련 통계를 봅니다.' path='/coffee/menu/stat/taxi' isUpper={false}/>
                 <Item title='샘플' explain='샘플 관련 통계를 봅니다.' path='/coffee/menu/stat/sample' isUpper={false}/>
             </ItemMenu>

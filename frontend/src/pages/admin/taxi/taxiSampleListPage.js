@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import Logo from '../../../Logo';
 import { TaxiApi, SampleApi } from '../../../api';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 
 const Body = styled.div`
@@ -82,7 +83,9 @@ const App = ({ match }) => {
                             {elem.sampleName}
                         </div>
                         <TextField name={elem.id} label='갯수' onChange={onChange}/>
-                    </div>} />
+                    </div>}
+                    secondary={'전체 ' + elem.stock.amount + '개 남음, ' + elem.stock.sales + '개 소비됨'}
+                />
                 
                 <Checkbox name={elem.id} onChange={onCheck} />
             </ListItem>
@@ -113,6 +116,7 @@ const App = ({ match }) => {
         <div>
             <Logo/>
             <Body>
+                <MenuTitle Title="샘플 목록" showBack={true} />
                 <List>
                     {SampleList}
                 </List>

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {SampleApi} from "../../../api";
 import {ListItem, ListItemText, List} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -46,8 +47,7 @@ const App = () => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>샘플 통계</b></Setting>
-                <hr />
+                <MenuTitle Title="샘플 통계" showBack={true} />
                 <List>
                     {Samples}
                 </List>

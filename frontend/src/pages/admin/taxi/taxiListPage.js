@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { TaxiApi } from '../../../api';
 import Item from '../../../components/menu/SampleBlock';
 import Logo from '../../../Logo';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const Body = styled.div`
     margin: 20px;
@@ -87,8 +88,7 @@ const App = () => {
         <div>
             <Logo />
             <Body>
-                <Setting><b>택시 목록</b></Setting>
-                <hr />
+                <MenuTitle Title="택시 목록" showBack={true} />
                 <List component="nav">
                     {TaxiList}
                 </List>

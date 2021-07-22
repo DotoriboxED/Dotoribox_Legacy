@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {TaxiApi} from "../../../api";
 import {ListItem, ListItemText, List, Select, MenuItem} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -26,8 +27,8 @@ const App = () => {
     const sortDict = {
         0: { createdAt: 'asc' },
         1: { createdAt: 'desc' },
-        2: { passenger: 'asc' },
-        3: { passenger: 'desc' }
+        2: { passenger: 'desc' },
+        3: { passenger: 'asc' }
     };
 
     useEffect(() => {
@@ -60,8 +61,7 @@ const App = () => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>택시 통계</b></Setting>
-                <hr />
+                <MenuTitle Title="택시 통계" showBack={true} />
                 <Select
                     labelId="demo-simple-select-label"
                     id='demo-simple-select'

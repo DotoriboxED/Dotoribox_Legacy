@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Logo from '../../../Logo';
 import Item from "../../../components/menu/MenuBlock";
 import {useHistory} from "react-router-dom";
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -48,8 +49,7 @@ const App = ({ match }) => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>재고</b></Setting>
-                <hr/>
+                <MenuTitle Title="재고" showBack={true} />
                 {
                     stock !== null && <div>
                         <Item title={stock.stock} explain='재고' isUpper={true}/>

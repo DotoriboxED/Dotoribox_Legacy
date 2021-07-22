@@ -5,6 +5,7 @@ import Logo from '../../../Logo';
 import styled from 'styled-components';
 import { List, ListItem, ListItemText, Checkbox } from '@material-ui/core';
 import { SampleApi } from '../../../api';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -66,7 +67,8 @@ const App = () => {
     const SampleList = (Sample.map((product, index) => {
         return (
             <ListItem button>
-                <ListItemText primary={product.sampleName} 
+                <ListItemText primary={product.sampleName}
+                              secondary={'전체 ' + product.stock.amount + '개 남음, ' + product.stock.sales + '개 소비됨'}
                     onClick={() => history.push('/coffee/menu/sample/' + product.id + '/edit')} />
                 <Checkbox name={product.id} onChange={onCheck} />
             </ListItem>
@@ -92,8 +94,7 @@ const App = () => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>샘플 관리</b></Setting>
-                <hr />
+                <MenuTitle Title="샘플 관리" showBack={true} />
                 <List>
                     {SampleList}
                 </List>

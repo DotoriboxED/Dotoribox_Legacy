@@ -4,6 +4,7 @@ import {List, ListItem, ListItemText} from "@material-ui/core";
 import Logo from "../../../Logo";
 import styled from "styled-components";
 import {useLocation} from "react-router-dom";
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -50,8 +51,7 @@ const App = ({ match }) => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>{sampleName}</b></Setting>
-                <hr />
+                <MenuTitle Title={sampleName} showBack={true} />
                 <List>
                     {PeopleBlock}
                 </List>

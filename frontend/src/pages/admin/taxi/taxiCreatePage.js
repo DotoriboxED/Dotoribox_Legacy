@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { TextField, Input } from '@material-ui/core'
 
 import Logo from '../../../Logo';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const Body = styled.div`
     margin: 20px;
@@ -82,8 +83,7 @@ const App = ({ match }) => {
         <div>
             <Logo />
             <Body>
-                <Setting><b>택시 생성</b></Setting>
-                <hr />
+                <MenuTitle Title="택시 생성" showBack={true} />
                 {
                     taxi &&
                     <div>

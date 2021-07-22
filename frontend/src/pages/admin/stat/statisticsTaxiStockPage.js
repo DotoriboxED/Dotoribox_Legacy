@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {ReviewApi, StockApi, TaxiApi} from "../../../api";
 import {useLocation} from "react-router-dom";
 import {Select, MenuItem, ListItem, ListItemText, List} from "@material-ui/core";
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -71,8 +72,7 @@ const App = ({ match }) => {
         <div>
             <Logo />
             <ItemMenu>
-                <Setting><b>{Taxi.taxiNumber}</b></Setting>
-                <hr />
+                <MenuTitle Title="택시 샘플 통계" showBack={true} />
                 <Select
                     labelId="demo-simple-select-label"
                     id='menuSelector'

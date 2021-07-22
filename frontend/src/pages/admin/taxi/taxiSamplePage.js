@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import Logo from '../../../Logo';
 import {StockApi, TaxiApi} from '../../../api';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 
 const Body = styled.div`
@@ -102,6 +103,7 @@ const App = ({ match }) => {
                             pathname: '/coffee/menu/taxi/' + taxiId + '/sample/' + elem.id
                         });
                     }}
+                    secondary={elem.stock + '개 남음, ' + elem.sales + '개 판매됨'}
                 />
                 <Checkbox name={elem.sample[0].id} onChange={onCheck} />
             </ListItem>
@@ -112,8 +114,7 @@ const App = ({ match }) => {
         <div>
             <Logo/>
             <Body>
-                <Setting><b>샘플 관리</b></Setting>
-                <hr />
+                <MenuTitle Title="샘플 관리" showBack={true} />
                 <List>
                     {SampleList}
                 </List>

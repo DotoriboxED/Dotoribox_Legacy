@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { TextField, Button, Input } from '@material-ui/core'
 
 import Logo from '../../../Logo';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const Body = styled.div`
     margin: 20px;
@@ -66,8 +67,7 @@ const App = ({ match }) => {
         <div>
             <Logo />
             <Body>
-                <Setting><b>제품 생성</b></Setting>
-                <hr />
+                <MenuTitle Title="제품 생성" showBack={true} />
                 <Button variant="contained" component="label" fullWidth>
                     이미지 선택
                     <input type="file" accept="image/*" onChange={e => imageHandler(e)} hidden />

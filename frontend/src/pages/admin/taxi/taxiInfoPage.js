@@ -7,6 +7,7 @@ import { TaxiApi, ReviewApi } from '../../../api';
 
 import Item from '../../../components/menu/MenuBlock'
 import Logo from '../../../Logo';
+import MenuTitle from "../../../components/menu/MenuTitle";
 
 const ItemMenu = styled.div`
     flex: 1;
@@ -75,8 +76,7 @@ const App = ({ match }) => {
         <div>
             <Logo />
             <ItemMenu>
-            <Setting><b>정보</b></Setting>
-            <hr/>
+            <MenuTitle Title="정보" showBack={true} />
             {
                 taxiInfo.taxi && 
                     <div>
