@@ -42,7 +42,7 @@ export class TaxiDto {
                 delete this.driver[key];
         });
 
-        if (obj.taxiNumber === undefined || isNaN(<number>this.taxiNumber))
+        if (obj.taxiNumber === undefined || isNaN(<number>obj.taxiNumber))
             delete this.taxiNumber;
         else
             this.taxiNumber = obj.taxiNumber;
