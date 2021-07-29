@@ -21,6 +21,7 @@ import StatisticsTaxiPage from "./pages/admin/stat/statisticsTaxiPage";
 import StatisticsTaxiStockPage from './pages/admin/stat/statisticsTaxiStockPage'
 import StatisticsSamplePage from './pages/admin/stat/statisticsSamplePage';
 import StatisticsSampleViewPage from './pages/admin/stat/statisticsSampleViewPage';
+import StatisticsTaxiStockLogPage from './pages/admin/stat/statisticsTaxiStockLogPage';
 
 function App({location}) {
     return (
@@ -46,6 +47,7 @@ function App({location}) {
             <Route path='/coffee/menu/stat/taxi/:taxiId' component={StatisticsTaxiStockPage} exact={true}/>
             <Route path='/coffee/menu/stat/sample' component={StatisticsSamplePage} exact={true} />
             <Route path='/coffee/menu/stat/sample/:sampleId' component={StatisticsSampleViewPage} exact={true} />
+            <Route path='/coffee/menu/stat/taxi/:taxiId/sample/:sampleId' component={StatisticsTaxiStockLogPage} exact={true} />
         </Switch>
     );
 }

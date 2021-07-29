@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Logo from "../../../Logo";
 import styled from "styled-components";
 import {ReviewApi, StockApi, TaxiApi} from "../../../api";
-import {useLocation} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import {Select, MenuItem, ListItem, ListItemText, List} from "@material-ui/core";
 import MenuTitle from "../../../components/menu/MenuTitle";
 import Graph from "../../../components/Graph";
@@ -28,6 +28,7 @@ const App = ({ match }) => {
     const [error, setError] = useState(null);
     const taxiId = match.params.taxiId;
     const location = useLocation();
+    const history = useHistory();
     const Taxi = location.state.elem;
 
     useEffect(() => {
@@ -60,7 +61,10 @@ const App = ({ match }) => {
         else secondary = elem.sales + '개 판매됨';
 
         return (
-            <ListItem>
+            <ListItem onClick={() => history.push({
+                pathname: '/coffee/menu/stat/taxi/' + elem.taxiId + '/sample/' + elem.sampleId,
+                state: { sampleName: elem.sample[0].sampleName }
+            })}>
                 <ListItemText
                     primary={elem.sample[0].sampleName}
                     secondary={secondary}
